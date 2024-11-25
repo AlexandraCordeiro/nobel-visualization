@@ -1,61 +1,64 @@
-// Dados fictícios para simular dados dos Prêmios Nobel
-const data = [
-    { id: 1, size: 30, otherSize: 15, cx: 100, cxF:200, cy: 100, cyF:500},
-    { id: 2, size: 20, otherSize: 25, cx: 400, cxF:100, cy: 200, cyF:10},
-    { id: 3, size: 40, otherSize: 20, cx: 100, cxF:400, cy: 300, cyF:200},
-    { id: 4, size: 25, otherSize: 30, cx: 50, cxF:800, cy: 500, cyF:500},
-  ];
-  
-  // Estado da transição inicial
-  let transitionState = 0;
-  
-  // Seleção do SVG e definição de largura e altura
-  const svg = d3.select("#bubble-chart");
-  //const width = 1000;
-  //const height = 600;
-  
-  // Função para criar e atualizar as bolinhas no gráfico
-  function updateChart(data, state) {
-    const bubbles = svg.selectAll("circle")
-      .data(data, d => d.id);
-  
-    // Entra - Adiciona novas bolinhas se necessário
-    bubbles.enter()
-      .append("circle")
-      //.attr("cx", () => Math.random() * width)
-      //.attr("cy", () => Math.random() * height)
-      .attr("r", 10)
-      .style("fill", "steelblue")
-      .merge(bubbles) // Atualiza as bolinhas existentes
-      .transition()
-      .duration(1000)
-      .attr("r", d => state === 1 ? d.size : d.otherSize) // Muda o tamanho
-      .attr("cx", d => state === 1 ? d.cx : d.cxF) //muda a posição x
-      .attr("cy", d => state === 1 ? d.cy : d.cyF) //muda a posição y
-      .style("fill", d => state === 2 ? "orange" : "steelblue"); // Muda a cor
-  
-    // Sai - Remove as bolinhas que não estão nos dados
-    bubbles.exit().remove();
-  }
-  
-  //Desenha o gráfico incialmente
-  updateChart(data, transitionState);
-  
-  // Função para alternar a transição ao fazer scroll na página ou a usar as teclas de seta
-  function changeTransitionState(newState) {
-    transitionState = (newState + 3) % 3; // Mantém o estado entre 0 e 2
-    updateChart(data, transitionState); //faz update dos valores do char
-  }
-  
-  // Event listeners para teclas de seta
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowRight") changeTransitionState(transitionState + 1);
-    if (e.key === "ArrowLeft") changeTransitionState(transitionState - 1);
-  });
-  
-  // Event listener para o *scroll*
-  window.addEventListener("wheel", (e) => {
-    if (e.deltaY > 0) changeTransitionState(transitionState + 1);
-    if (e.deltaY < 0) changeTransitionState(transitionState - 1);
-  });
-  
+let margin = 100;
+let width = window.innerWidth - margin;
+let height = width / 1.5;
+
+let svg = d3.select('body').append('svg').attr('width', width).attr('height', height);
+
+let projection = d3.geoMercator().translate([width / 2, height / 1.4]).scale(width / 6);
+let path = d3.geoPath(projection);
+let g = svg.append('g');
+
+function drawMap() {
+
+  d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json")
+    .then(data => {
+      // console.log(data.objects)
+      const countries = topojson.feature(data, data.objects.countries);
+      g.selectAll('path').data(countries.features).enter().append('path').attr('class', 'country').attr('d', path);
+    })
+}
+
+function resize() {
+  width = window.innerWidth - margin;
+  height = width / 1.5;
+
+  svg.attr('width', width).attr('height', height);
+
+  projection.translate([width / 2, height / 1.4]).scale(width / 7);
+
+  g.selectAll('path').attr('d', path);
+
+  svg.selectAll('circle')
+    .attr('cx', d => projection([+d.country_longitude, +d.country_latitude])[0])
+    .attr('cy', d => projection([+d.country_longitude, +d.country_latitude])[1])
+
+  svg.selectAll('circle')
+  .attr('cx', d => projection([+d.birth_country_longitude, +d.birth_country_latitude])[0])
+  .attr('cy', d => projection([+d.birth_country_longitude, +d.birth_country_latitude])[1]);
+}
+
+
+function drawBubbles() {
+  let dataset = d3.csv('dataset/new_laureates.csv').then(data => {
+    
+    filterData = data.filter(d => d.birth_country_latitude && d.birth_country_longitude);
+    console.log(filterData)
+    svg.selectAll('circle')
+    .data(filterData)
+    .enter()
+      .each((d, i) => {
+        console.log(`Element index: ${i}, Data:`, d.birth_country_latitude, d.birth_country_longitude);
+      })
+      .append('circle')
+      .attr('cx', d => projection([+d.birth_country_longitude, +d.birth_country_latitude])[0])
+      .attr('cy', d => projection([+d.birth_country_longitude, +d.birth_country_latitude])[1])
+      .attr('fill', '#E9DF69')
+      .attr('r', d => Math.sqrt(+d.birth_country_count / 2 * Math.PI) * 1.5)
+      .attr('opacity', 1);
+  })
+}
+
+
+drawMap();
+drawBubbles();
+window.addEventListener('resize', resize);
