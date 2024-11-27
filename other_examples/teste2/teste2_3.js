@@ -108,7 +108,7 @@ window.onload = function () {
             const y = centerY + currentRadius * Math.sin(angle);
 
             // Obtem o laureado correspondente
-            const laureate = laureates[index] || { id: null, name: "Unknown", gender: "Unknown" };
+            const laureate = laureates[index] || { id: null, name: "Unknown", gender: "Unknown"};
             //console.log(laureate);
 
             data.push({ //dá push apenas dos dados que quero ver
@@ -129,15 +129,102 @@ window.onload = function () {
     update(); // Atualiza o SVG com os novos círculos
 }
 
-  // Fase 3: Remover os círculos com ids específicos
-  function phase3() {
+  // Fase 3: Separar por entidades
+  // Fase 3: Separar círculos por gênero e organizar em grelhas circulares
+function phase3() {
+    const centerX = width / 4; // Dividir a área em 3 regiões horizontais
+    const centerY = height / 2; // Centro vertical
+    const circleRadius = 7; // Raio de cada círculo
+    const gap = 1; // Espaçamento entre círculos
+    const effectiveRadius = circleRadius + gap; // Raio efetivo considerando o gap
+
+    // Definir centros para cada gênero
+    const centers = {
+        male: { x: centerX, y: centerY },
+        female: { x: centerX * 2, y: centerY },
+        other: { x: centerX * 3, y: centerY }
+    };
+
+    // Grupos de dados para cada gênero
+    const groups = {
+        male: [],
+        female: [],
+        other: []
+    };
+
+    // Separar laureados por gênero
+    laureates.forEach(laureate => {
+        const gender = laureate.gender;
+        if (gender === 'male') {
+            groups.male.push(laureate);
+        } else if (gender === 'female') {
+            groups.female.push(laureate);
+        } else {
+            groups.other.push(laureate);
+        }
+    });
+
+    // Processar cada grupo
+    data = []; // Redefine os dados
+    Object.keys(groups).forEach(groupKey => {
+        const laureates = groups[groupKey];
+        const { x: groupCenterX, y: groupCenterY } = centers[groupKey];
+        const color = groupKey === 'male' ? 'black' : groupKey === 'female' ? 'yellow' : 'green';
+
+        let currentRadius = 0; // Raio atual da camada
+        let index = 0; // Índice para acessar laureates
+
+        while (index < laureates.length) {
+            currentRadius += effectiveRadius * 2; // Incrementa o raio da camada com base no tamanho efetivo
+            // Número de círculos na camada atual, proporcional ao comprimento da circunferência
+            const circumference = 2 * Math.PI * currentRadius;
+            const circlesInLayer = Math.min(
+                laureates.length - index,
+                Math.floor(circumference / (effectiveRadius * 2))
+            );
+
+            // Ângulo entre círculos nesta camada
+            const angleStep = (2 * Math.PI) / circlesInLayer;
+
+            // Adiciona os círculos da camada
+            for (let i = 0; i < circlesInLayer; i++) {
+                const angle = i * angleStep;
+                const x = groupCenterX + currentRadius * Math.cos(angle);
+                const y = groupCenterY + currentRadius * Math.sin(angle);
+
+                const laureate = laureates[index];
+
+                data.push({
+                    x: x,
+                    y: y,
+                    r: circleRadius,
+                    color: color,
+                    id: laureate.id,
+                    name: laureate.name,
+                    gender: laureate.gender,
+                    prizeCategory: laureate.prizeCategory,
+                    awardYear: laureate.awardYear
+                });
+                index++; // Avança para o próximo laureado
+            }
+        }
+    });
+
+    update(); // Atualiza o SVG com os novos círculos
+}
+
+
+
+
+  // Fase 4: Remover os círculos com ids específicos
+  function phase4() {
     const idsToRemove = [5, 9, 4, 2];
     data = data.filter((d) => !idsToRemove.includes(d.id));
     update();
   }
 
-  // Fase 4: Adicionar uma bola amarela
-  function phase4() {
+   // Fase 5: Adicionar uma bola amarela
+   function phase5() {
     data.push({
       id: data.length,
       x: xScale(Math.random() * 10),
@@ -237,6 +324,7 @@ window.onload = function () {
     if (phase === 2) phase2();
     if (phase === 3) phase3();
     if (phase === 4) phase4();
+    if (phase === 5) phase5();
   }
 
   // Eventos de teclado
