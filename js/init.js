@@ -1,11 +1,20 @@
 
+function update() {
 
+var width = window.innerWidth - 100;
 
 
 // Dados fictícios para simular dados dos Prêmios Nobel
 const data = [
     { id: 1, size: 30, otherSize: 15, cx: 100, cy: 100, cxF:200, cyF:100},
-];
+    { id: 2, size: 20, otherSize: 25, cx: 400, cxF:100, cy: 200, cyF:10},
+    { id: 3, size: 40, otherSize: 20, cx: 100, cxF:400, cy: 300, cyF:200},
+    { id: 4, size: 25, otherSize: 30, cx: 50, cxF:100, cy: 500, cyF:100},
+  ];
+
+myScale = d3.scaleLinear()
+  .domain([0, 10])
+  .range([0, width]);
   
   // Estado da transição inicial
   let transitionState = 0;
@@ -23,8 +32,7 @@ const data = [
     // Entra - Adiciona novas bolinhas se necessário
     bubbles.enter()
       .append("circle")
-      //.attr("cx", () => Math.random() * width)
-      //.attr("cy", () => Math.random() * height)
+
       .attr("r", 10)
       .style("fill", "steelblue")
       .merge(bubbles) // Atualiza as bolinhas existentes
@@ -33,7 +41,7 @@ const data = [
       .attr("r", d => state === 1 ? d.size : d.otherSize) // Muda o tamanho
       .attr("cx", d => state === 1 ? d.cx : d.cxF) //muda a posição x
       .attr("cy", d => state === 1 ? d.cy : d.cyF) //muda a posição y
-      .style("fill", d => state === 2 ? "orange" : "steelblue"); // Muda a cor
+      //.style("fill", d => state === 2 ? "orange" : "steelblue"); // Muda a cor
   
     // Sai - Remove as bolinhas que não estão nos dados
     bubbles.exit().remove();
@@ -60,3 +68,12 @@ const data = [
     if (e.deltaY < 0) changeTransitionState(transitionState - 1);
   });
   
+}
+
+//inicializa os elementos
+update();
+
+// Redefine os elementos ao redimensionar a janela
+d3.select(window).on("resize", function() {
+	update();
+});
