@@ -18,3 +18,9 @@ body {
     stroke: #ccc;
     stroke-width: 0.05rem;
   }
+
+
+  #chartdiv {
+    width: 100%;
+    height: 400px;
+  }
