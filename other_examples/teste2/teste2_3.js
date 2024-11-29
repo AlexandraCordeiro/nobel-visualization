@@ -129,20 +129,85 @@ window.onload = function () {
     update(); // Atualiza o SVG com os novos círculos
 }
 
-  // Fase 3: Separar por entidades
-  // Fase 3: Separar círculos por gênero e organizar em grelhas circulares
+/*function phase3() {
+    const centerX = width / 2; // Centro da grelha
+    const centerY = height / 2; // Centro da grelha
+    const circleRadius = 7; // Raio de cada círculo
+    const gap = 1; // Espaçamento entre círculos
+    const effectiveRadius = circleRadius + gap; // Raio efetivo considerando o gap
+
+    data = []; // Redefine os dados
+
+    let currentRadius = 0; // Raio atual da camada
+    let index = 0; // Índice para acessar laureates
+
+    // Processa apenas os laureados disponíveis
+    const totalLaureates = laureates.length;
+
+    while (index < totalLaureates) {
+        currentRadius += effectiveRadius * 2; // Incrementa o raio da camada com base no tamanho efetivo
+        // Número de círculos na camada atual, proporcional ao comprimento da circunferência
+        const circumference = 2 * Math.PI * currentRadius;
+        const circlesInLayer = Math.min(
+            totalLaureates - index,
+            Math.floor(circumference / (effectiveRadius * 2))
+        );
+
+        // Ângulo entre círculos nesta camada
+        const angleStep = (2 * Math.PI) / circlesInLayer;
+
+        // Adiciona os círculos da camada
+        for (let i = 0; i < circlesInLayer; i++) {
+            const angle = i * angleStep;
+            const x = centerX + currentRadius * Math.cos(angle);
+            const y = centerY + currentRadius * Math.sin(angle);
+
+            // Obtem o laureado correspondente
+            const laureate = laureates[index] || { id: null, name: "Unknown", gender: "Unknown" };
+
+            // Determina a cor com base no gênero
+            const color = laureate.gender === "male"
+                ? "#A69A07"
+                : laureate.gender === "female"
+                ? "#D7CB34"
+                : "#E9DF69";
+
+            data.push({ // dá push apenas dos dados que quero ver
+                x: x,
+                y: y,
+                r: circleRadius,
+                color: color, // Usa a cor definida com base no gênero
+                id: laureate.id,
+                name: laureate.name,
+                gender: laureate.gender,
+                prizeCategory: laureate.prizeCategory,
+                awardYear: laureate.awardYear
+            });
+            index++; // Avança para o próximo laureado
+        }
+    }
+
+    update(); // Atualiza o SVG com os novos círculos
+
+}*/
+
+
+  // Fase 3: Separar por entidades e organizar em grelhas (circulares)
 function phase3() {
-    const centerX = width / 4; // Dividir a área em 3 regiões horizontais
+
+    const centerX = width / 2; //Centro horizontal
     const centerY = height / 2; // Centro vertical
     const circleRadius = 7; // Raio de cada círculo
     const gap = 1; // Espaçamento entre círculos
     const effectiveRadius = circleRadius + gap; // Raio efetivo considerando o gap
 
-    // Definir centros para cada gênero
+    //valor que define o género de um triangulos
+    let val = 250;
+     // Definir centros para cada gênero
     const centers = {
-        male: { x: centerX, y: centerY },
-        female: { x: centerX * 2, y: centerY },
-        other: { x: centerX * 3, y: centerY }
+        male: { x: centerX-val/2, y: centerY },
+        female: { x: centerX+val, y: centerY+val/2 },
+        other: { x: centerX+val, y: centerY-val/3 }
     };
 
     // Grupos de dados para cada gênero
@@ -169,7 +234,7 @@ function phase3() {
     Object.keys(groups).forEach(groupKey => {
         const laureates = groups[groupKey];
         const { x: groupCenterX, y: groupCenterY } = centers[groupKey];
-        const color = groupKey === 'male' ? 'black' : groupKey === 'female' ? 'yellow' : 'green';
+        const color = groupKey === 'male' ? '#A69A07' : groupKey === 'female' ? '#D7CB34' : '#E9DF69';
 
         let currentRadius = 0; // Raio atual da camada
         let index = 0; // Índice para acessar laureates
@@ -213,18 +278,169 @@ function phase3() {
     update(); // Atualiza o SVG com os novos círculos
 }
 
+//Fase 4: separar por categorias
+function phase4() {
+  //se estiver na phase5() e voltar atras remove o pattern
+  svg.selectAll("pattern").remove()
 
+  console.log("FASE 4");
+  const centerX = width / 2; // Centro horizontal
+  const centerY = height / 2; // Centro vertical
+  const circleRadius = 7; // Raio de cada círculo
+  const gap = 1; // Espaçamento entre círculos
+  const effectiveRadius = circleRadius + gap; // Raio efetivo considerando o gap
+
+  // Valor para definir deslocamento entre as categorias
+  const val = 250;
+
+  // Lista de categorias únicas no dataset
+  const categories = [...new Set(laureates.map(laureate => laureate.prizeCategory))];
+
+  // Calcular centros para cada categoria (em uma distribuição circular)
+  const centers = {};
+  const angleStep = (2 * Math.PI) / categories.length;
+
+  categories.forEach((category, index) => {
+      const angle = index * angleStep;
+      centers[category] = {
+          x: centerX + val * Math.cos(angle),
+          y: centerY + val * Math.sin(angle)
+      };
+  });
+
+  // Grupos de dados para cada categoria
+  const groups = {};
+  categories.forEach(category => {
+      groups[category] = [];
+  });
+
+  // Separar laureados por categoria
+  laureates.forEach(laureate => {
+      const category = laureate.prizeCategory;
+      if (groups[category]) {
+          groups[category].push(laureate);
+      }
+  });
+
+  // Processar cada grupo
+  data = []; // Redefine os dados
+  Object.keys(groups).forEach(groupKey => {
+      const laureates = groups[groupKey];
+      const { x: groupCenterX, y: groupCenterY } = centers[groupKey];
+      const color = getColorForCategory(groupKey); // Obtem a cor com base na categoria
+
+      let currentRadius = 0; // Raio atual da camada
+      let index = 0; // Índice para acessar laureates
+
+      while (index < laureates.length) {
+          currentRadius += effectiveRadius * 2; // Incrementa o raio da camada com base no tamanho efetivo
+          // Número de círculos na camada atual, proporcional ao comprimento da circunferência
+          const circumference = 2 * Math.PI * currentRadius;
+          const circlesInLayer = Math.min(
+              laureates.length - index,
+              Math.floor(circumference / (effectiveRadius * 2))
+          );
+
+          // Ângulo entre círculos nesta camada
+          const angleStep = (2 * Math.PI) / circlesInLayer;
+
+          // Adiciona os círculos da camada
+          for (let i = 0; i < circlesInLayer; i++) {
+              const angle = i * angleStep;
+              const x = groupCenterX + currentRadius * Math.cos(angle);
+              const y = groupCenterY + currentRadius * Math.sin(angle);
+
+              const laureate = laureates[index];
+
+              data.push({
+                  x: x,
+                  y: y,
+                  r: circleRadius,
+                  color: color,
+                  id: laureate.id,
+                  name: laureate.name,
+                  gender: laureate.gender,
+                  prizeCategory: laureate.prizeCategory,
+                  awardYear: laureate.awardYear
+              });
+              index++; // Avança para o próximo laureado
+          }
+      }
+  });
+
+  update(); // Atualiza o SVG com os novos círculos
+
+  // Função para obter uma cor única para cada categoria
+function getColorForCategory(category) {
+  const colors = {
+      Physics: "#A69A07",
+      Chemistry: "#D7CB34",
+      PhysiologyorMedicine: "#E9DF69",
+      Literature: "#34D7A0",
+      Peace: "#34A6D7",
+      EconomicSciences: "#D73434"
+  };
+  return colors[category] || "#888888"; // Cor padrão para categorias desconhecidas
+}
+}
+
+function phase5() {
+  console.log("FASE 5");
+
+  const backgroundImageURL = "../../marie_curie.png"; // Substitua pelo caminho correto
+
+  const svg = d3.select("svg");
+
+  // Limpa o SVG antes de adicionar elementos
+  //svg.selectAll("*").remove();
+
+  // Define um padrão para a imagem
+  const defs = svg.append("defs");
+  defs.append("pattern")
+      .attr("id", "circle-bg") // ID único do padrão
+      //.attr("patternUnits", "objectBoundingBox")
+      .attr("width", 1)
+      .attr("height", 1)
+      .append("image")
+      .attr("xlink:href", backgroundImageURL)
+      //.attr("preserveAspectRatio", "xMidYMid slice") // Ajusta a proporção
+      //.attr("width", 600) // Ajuste para o tamanho correto da imagem
+      //.attr("height", 600); // Ajuste para o tamanho correto da imagem
+
+  // Adiciona o círculo com o padrão de fundo
+  data = [
+      { id: 0, x: xScale(5), y: yScale(5), r: 300, color: "url(#circle-bg)" }
+  ];
+
+  svg.selectAll("circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y)
+      .attr("r", d => d.r)
+      .attr("fill", d => d.color)
+      .attr("id", "backgroundCircle"); // Adiciona um ID para o círculo
+
+  update();
+}
+
+function phase6() {
+  console.log("FASE 6");
+  //remove o pattern ao avançar para a phase6();
+  svg.selectAll("pattern").remove()
+}
 
 
   // Fase 4: Remover os círculos com ids específicos
-  function phase4() {
+  /*function phase4() {
     const idsToRemove = [5, 9, 4, 2];
     data = data.filter((d) => !idsToRemove.includes(d.id));
     update();
-  }
+  }*/
 
    // Fase 5: Adicionar uma bola amarela
-   function phase5() {
+  /* function phase5() {
     data.push({
       id: data.length,
       x: xScale(Math.random() * 10),
@@ -233,11 +449,10 @@ function phase3() {
       color: "yellow",
     });
     update();
-  }
+  }*/
 
   // Função de atualização que faz o binding de dados com os elementos SVG
   function update() {
-
     const mOver = function(e, d){
         // e is the mouseEvent
         // d is the data
@@ -259,8 +474,6 @@ function phase3() {
 
         d3.select(this.parentNode).selectAll('#temp').remove('#temp');
     }
-
-
 
     // Organizar os dados em grupos (não tem efeito direto na criação do SVG, mas pode ser útil)
    /* const groupedData = d3.group(data, d => d.category); // Agrupar por categoria ou outro critério*/
@@ -304,18 +517,19 @@ function phase3() {
       .transition()
       .duration(500)
       .attr("r", (d) => d.r)
+
   }
 
   // Controle de fases com as teclas LEFT e RIGHT
   function nextPhase() {
     phase++;
-    if (phase > 4) phase = 1; // Volta para a fase 1
+    if (phase > 6) phase = 1; // Volta para a fase 1
     runPhase(phase);
   }
 
   function previousPhase() {
     phase--;
-    if (phase < 1) phase = 4; // Vai para a fase 4
+    if (phase < 1) phase = 6; // Vai para a fase 4
     runPhase(phase);
   }
 
@@ -325,6 +539,7 @@ function phase3() {
     if (phase === 3) phase3();
     if (phase === 4) phase4();
     if (phase === 5) phase5();
+    if (phase === 6) phase6();
   }
 
   // Eventos de teclado
@@ -337,4 +552,5 @@ function phase3() {
   window.addEventListener("resize", resize);
   // Iniciar na fase 1
   phase1();
+  
 };
