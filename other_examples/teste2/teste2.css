@@ -1,5 +1,60 @@
+*{
+    font-family: "Roboto", sans-serif;
+    --preto: #1A1510;
+    margin:0;
+}
+body{
+    overflow: hidden; /*bloqueia o scroll*/
+}
+
+#my-dataviz{
+    width:100vw;
+    height:100vh;
+    position:fixed;
+}
+
 svg {
     border: 1px solid #ddd;
     display: block;
     margin: auto;
+    width:100%;
+    height:100%;
+}
+
+/*Divs principais*/
+#title{
+    position:fixed;
+    top:30px;
+    left:30px;
+    color: var(--preto);
+}
+
+#other_text{
+    width:35%;
+    position: fixed;
+    bottom:30px;
+    right:30px;
+    color: var(--preto);
+}
+
+/*content dentro das divs*/
+h1{
+    font-family: "Cormorant Garamond", serif;
+    font-size: 60px;
+    font-weight: 700;
+    font-style: normal;
+    margin:0;
+}
+
+span{
+    font-size:40px;
+}
+
+#name{
+    font-size:34px;
+    font-weight:500;
+}
+
+p{
+    font-size:16px;
 }

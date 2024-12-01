@@ -9,21 +9,21 @@ window.onload = function () {
   let data = [];
 
   svg = d3.select("svg");
-  let width = window.innerWidth - 100;
-  let height = window.innerHeight - 100;
+  let width = window.innerWidth;
+  let height = window.innerHeight;
   // Atualiza o tamanho do SVG
   svg.attr("width", width).attr("height", height);
   // Escalas para ajustar os valores
   const xScale = d3.scaleLinear().domain([0, 10]).range([0, width]);
   const yScale = d3.scaleLinear().domain([0, 10]).range([0, height]);
   // Atualiza largura e escala em redimensionamento da janela
-  let originalWidth = window.innerWidth - 100;
-  let originalHeight = window.innerHeight - 100;
+  let originalWidth = window.innerWidth;
+  let originalHeight = window.innerHeight;
   const Ratio = originalHeight / originalWidth; // Proporção inicial de altura para largura
 
   function resize() {
     // Atualizar dimensões
-    let newWidth = window.innerWidth - 100;
+    let newWidth = window.innerWidth;
     let newHeight = newWidth * Ratio;
     // Atualiza o tamanho do SVG
     svg.attr("width", newWidth).attr("height", newHeight);
@@ -375,10 +375,10 @@ function getColorForCategory(category) {
   const colors = {
       Physics: "#A69A07",
       Chemistry: "#D7CB34",
-      PhysiologyorMedicine: "#E9DF69",
+      Physiology_or_Medicine: "#E9DF69",
       Literature: "#34D7A0",
       Peace: "#34A6D7",
-      EconomicSciences: "#D73434"
+      Economic_Sciences: "#D73434"
   };
   return colors[category] || "#888888"; // Cor padrão para categorias desconhecidas
 }
@@ -387,9 +387,11 @@ function getColorForCategory(category) {
 function phase5() {
   console.log("FASE 5");
 
-  const backgroundImageURL = "../../marie_curie.png"; // Substitua pelo caminho correto
-
+  const backgroundImageURL = "../../marie_curie.png";
   const svg = d3.select("svg");
+
+  const wikidataId = "";
+  fetchWikidataImage(wikidataId);
 
   // Limpa o SVG antes de adicionar elementos
   //svg.selectAll("*").remove();
@@ -430,7 +432,6 @@ function phase6() {
   //remove o pattern ao avançar para a phase6();
   svg.selectAll("pattern").remove()
 }
-
 
   // Fase 4: Remover os círculos com ids específicos
   /*function phase4() {
@@ -520,16 +521,17 @@ function phase6() {
 
   }
 
+  let maxPhase = 6;
   // Controle de fases com as teclas LEFT e RIGHT
   function nextPhase() {
     phase++;
-    if (phase > 6) phase = 1; // Volta para a fase 1
+    if (phase > maxPhase) phase = 1; // Volta para a fase 1
     runPhase(phase);
   }
 
   function previousPhase() {
     phase--;
-    if (phase < 1) phase = 6; // Vai para a fase 4
+    if (phase < 1) phase = maxPhase; 
     runPhase(phase);
   }
 
@@ -554,3 +556,51 @@ function phase6() {
   phase1();
   
 };
+
+
+
+
+
+
+// URL da Wikidata
+const wikidataLink = "https://www.wikidata.org/wiki/Q7186";
+
+// Função para extrair o ID da Wikidata do link
+function getWikidataId(url) {
+  const match = url.match(/\/wiki\/(Q\d+)/);
+  return match ? match[1] : null;
+}
+
+// Função para buscar a imagem associada a um item da Wikidata
+async function fetchWikidataImage(wikidataId) {
+  const apiUrl = `https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=${wikidataId}&property=P18&format=json&origin=*`;
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+
+    // Verificar se a propriedade P18 (imagem) existe
+    if (data.claims && data.claims.P18) {
+      const imageName = data.claims.P18[0].mainsnak.datavalue.value;
+      // Construir a URL da imagem no Wikimedia Commons
+      const imageUrl = `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(imageName)}`;
+      console.log(`Imagem encontrada: ${imageUrl}`);
+      return imageUrl;
+    } else {
+      console.log("Nenhuma imagem encontrada para este item.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Erro ao buscar a imagem:", error);
+    return null;
+  }
+}
+
+// Processar o único link
+(async () => {
+  const wikidataId = getWikidataId(wikidataLink);
+  if (wikidataId) {
+    await fetchWikidataImage(wikidataId);
+  } else {
+    console.log("Link da Wikidata inválido.");
+  }
+})();

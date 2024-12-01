@@ -8,13 +8,50 @@
     <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
     <title>D3.js Responsivo</title>
     <link rel="stylesheet" href="teste2.css">
+
+    <!-- old style-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <!--roboto-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Nobel Prizes</h1>
+    <div id="title">
+        <h1>NOBEL PRIZES</h1>
+        <span>Sobre</span>
+    </div>
+
     <div id="my_dataviz">
         <svg id="bubble-chart"></svg>
     </div>
-    
-    <script src="teste2_3.js"></script>
+
+    <div id="other_text">
+        <div id="name">Alfred Nobel</div>
+        <p>Alfred Nobel foi um químico, engenheiro, inventor, homem de negócios e filantropo sueco do século XIX. É mais conhecido por ter inventado a dinamite e por ter sido o fundador do Prémio Nobel.</p>
+    </div>  
+    <!--<script src="teste2_3.js"></script>-->
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="../../js/update.js"></script>
+    <script src="../../js/data.js"></script>
+    <script src="../../js/phases.js"></script>
+    <script src="../../js/main.js"></script>
+
+    <!--<script src="../../js/dataLoader.js"></script>
+    <script src="../../js/phases.js"></script>
+    <script src="../../js/resize.js"></script>
+    <script src="../../js/svg.js"></script>
+    <script src="../../js/keyboard.js"></script>
+    <script src="../../js/main.js"></script>-->
+
+    <!--<script type="module" src="../../js/resize.js"></script> Funções utilitárias
+    <script type="module" src="../../js/data.js"></script>  Carregamento do dataset 
+    <script type="module" src="../../js/phases.js"></script>  Controle das fases
+    <script type="module" src="../../js/update.js"></script> Função de atualização do SVG 
+    <script type="module" src="../../js/main.js"></script>  Script principal -->
+   
 </body>
 </html>
