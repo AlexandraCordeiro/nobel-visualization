@@ -5,7 +5,7 @@ svg= d3.select("svg");
 function phase1() {
     svg.selectAll("text").remove()
     // Dados do círculo
-    data = [{ id: 0, x: xScale(5), y: yScale(5), r: raio, color: "#E9DF69", imagePath: "../../dataset/moeda.png" }];
+    data = [{ id: 0, x: xScale(5), y: yScale(5), r: raio, color: "#E9DF69", imagePath: "../../src/moeda.png" }];
 
     // Remove qualquer imagem existente para evitar duplicação
     svg.selectAll("image").remove();
