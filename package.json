@@ -1,0 +1,14 @@
+{
+  "name": "c58b14f2a8fdc834",
+  "main": "c58b14f2a8fdc834@204.js",
+  "version": "204.0.0",
+  "homepage": "https://observablehq.com/d/c58b14f2a8fdc834",
+  "author": {
+    "name": "alexandra",
+    "url": "https://observablehq.com/@alexandra5"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
