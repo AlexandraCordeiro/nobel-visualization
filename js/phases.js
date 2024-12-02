@@ -101,7 +101,8 @@ function phase3() {
                 name: laureate.name,
                 gender: laureate.gender,
                 prizeCategory: laureate.prizeCategory,
-                awardYear: laureate.awardYear
+                awardYear: laureate.awardYear,
+                wikidata: laureate.wikidata,
             });
             index++; // Avança para o próximo laureado
         }
@@ -165,7 +166,8 @@ function phase4() {
                 name: laureate.name,
                 gender: laureate.gender,
                 prizeCategory: laureate.prizeCategory,
-                awardYear: laureate.awardYear
+                awardYear: laureate.awardYear,
+                wikidata: laureate.wikidata,
             });
             index++; // Avança para o próximo laureado
         }
@@ -253,7 +255,8 @@ function phase5() {
                     name: laureate.name,
                     gender: laureate.gender,
                     prizeCategory: laureate.prizeCategory,
-                    awardYear: laureate.awardYear
+                    awardYear: laureate.awardYear,
+                    wikidata: laureate.wikidata,
                 });
                 index++; // Avança para o próximo laureado
             }
@@ -348,7 +351,8 @@ console.log("fase 6");
                   name: laureate.name,
                   gender: laureate.gender,
                   prizeCategory: laureate.prizeCategory,
-                  awardYear: laureate.awardYear
+                  awardYear: laureate.awardYear,
+                  wikidata: laureate.wikidata,
               });
               index++; // Avança para o próximo laureado
           }
@@ -561,7 +565,8 @@ function phase7() {
                     name: laureate.name,
                     gender: laureate.gender,
                     prizeCategory: laureate.prizeCategory,
-                    awardYear: laureate.awardYear
+                    awardYear: laureate.awardYear,
+                    wikidata: laureate.wikidata,
                 });
                 index++; // Avança para o próximo laureado
             }
@@ -689,7 +694,8 @@ function phase8(){
                             name: laureate.name,
                             gender: laureate.gender,
                             prizeCategory: laureate.prizeCategory,
-                            awardYear: laureate.awardYear
+                            awardYear: laureate.awardYear,
+                            wikidata: laureate.wikidata,
                         });
                         index++; // Avança para o próximo laureado
                     }
@@ -713,31 +719,47 @@ function phase8(){
     
 }
 
+
+
 //Marie Curie
 function phase9(){
     console.log("FASE 9");
-
-  const backgroundImageURL = "../../marie_curie.png";
+    const url= "https://www.wikidata.org/wiki/Q7186"; //url da pagina completa da wikidata
+    console.log(getWikidataId(url));
+  //const backgroundImageURL = "../../marie_curie.png";
   const svg = d3.select("svg");
 
-  const wikidataId = "";
-  fetchWikidataImage(wikidataId);
+  (async () => {
+    try {
+        const wikidataId = getWikidataId(url); // Obtém o ID da Wikidata a partir da URL
+        if (wikidataId) {
+           
+           const backgroundImageURL = await fetchWikidataImage(wikidataId); // Aguarda o resultado da Promise
 
-  // Limpa o SVG antes de adicionar elementos
-  //svg.selectAll("*").remove();
+                // Limpa o SVG antes de adicionar elementos
+            //svg.selectAll("*").remove();
 
-  // Define um padrão para a imagem
-  const defs = svg.append("defs");
-  defs.append("pattern")
-      .attr("id", "circle-bg") // ID único do padrão
-      //.attr("patternUnits", "objectBoundingBox")
-      .attr("width", 1)
-      .attr("height", 1)
-      .append("image")
-      .attr("xlink:href", backgroundImageURL)
-      //.attr("preserveAspectRatio", "xMidYMid slice") // Ajusta a proporção
-      //.attr("width", 600) // Ajuste para o tamanho correto da imagem
-      //.attr("height", 600); // Ajuste para o tamanho correto da imagem
+            // Define um padrão para a imagem
+            const defs = svg.append("defs");
+            defs.append("pattern")
+                .attr("id", "circle-bg") // ID único do padrão
+                //.attr("patternUnits", "objectBoundingBox")
+                .attr("width", 1)
+                .attr("height", 1)
+                .append("image")
+                .attr("xlink:href", backgroundImageURL)
+                .attr("preserveAspectRatio", "xMidYMid slice") // Ajusta a proporção
+                .attr("width", raio*2) // Ajuste para o tamanho correto da imagem
+                .attr("height", raio*2); // Ajuste para o tamanho correto da imagem
+            
+        } else {
+            console.log("Link da Wikidata inválido.");
+        }
+    } catch (error) {
+        console.error("Erro ao buscar a imagem da Wikidata:", error);
+    }
+})();
+    
 
   // Adiciona o círculo com o padrão de fundo
   data = [
@@ -788,7 +810,7 @@ function runPhase(phase) {
 
 
 // URL da Wikidata
-const wikidataLink = "https://www.wikidata.org/wiki/Q7186";
+//const wikidataLink = "https://www.wikidata.org/wiki/Q7186";
 
 // Função para extrair o ID da Wikidata do link
 function getWikidataId(url) {
@@ -808,7 +830,7 @@ async function fetchWikidataImage(wikidataId) {
       const imageName = data.claims.P18[0].mainsnak.datavalue.value;
       // Construir a URL da imagem no Wikimedia Commons
       const imageUrl = `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(imageName)}`;
-      console.log(`Imagem encontrada: ${imageUrl}`);
+      //console.log(`Imagem encontrada: ${imageUrl}`);
       return imageUrl;
     } else {
       console.log("Nenhuma imagem encontrada para este item.");
@@ -819,13 +841,3 @@ async function fetchWikidataImage(wikidataId) {
     return null;
   }
 }
-
-// Processar o único link
-(async () => {
-  const wikidataId = getWikidataId(wikidataLink);
-  if (wikidataId) {
-    await fetchWikidataImage(wikidataId);
-  } else {
-    console.log("Link da Wikidata inválido.");
-  }
-})();

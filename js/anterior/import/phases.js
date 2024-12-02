@@ -1,5 +1,5 @@
 import { svg, data, laureates} from './data.js';
-import { update } from '../update.js';
+import { update } from '../../update.js';
 import {} from './resize.js';
 
 export function phase1() {

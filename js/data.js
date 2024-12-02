@@ -9,6 +9,7 @@ function loadDataset(callback) {
         prizeCategory: d.category,
         awardYear: d.awardYear,
         gender: d.gender,
+        wikidata: d.wikidata
     }))
         .then((loadedData) => {
             laureates = loadedData;

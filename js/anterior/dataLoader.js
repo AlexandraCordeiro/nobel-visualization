@@ -5,6 +5,7 @@ function loadData(filePath, callback) {
         prizeCategory: d.category,
         awardYear: d.awardYear,
         gender: d.gender,
+        wikidata: d.wikidata,
     }))
     .then(callback)
     .catch((error) => {

@@ -18,20 +18,36 @@ function adjustScales() {
 
 
 function update() {
-    const mOver = function(e, d){
+    const mOver = (e, d) => {
         // e is the mouseEvent
         // d is the data
         console.log(d);
-        d3.select(this) // this is the svg element interacted with
+    
+        const element = d3.select(e.currentTarget); // Current SVG element
+        const parent = d3.select(element.node().parentNode); // Parent of the SVG element
+    
+        // Highlight the SVG element
+        element
             .style("stroke", "black")
             .style("opacity", 1);
-        d3.select(this.parentNode)
-            .append('text')
-            .attr('dy', "100px")
-            .attr('id', 'temp')
-            .text(d.name)
-            .attr('fill', 'black');
-    }
+    
+        // Array of text properties to display
+        const textData = [
+            { dy: "100px", text: d.name },
+            { dy: "120px", text: d.prizeCategory },
+            { dy: "140px", text: d.awardYear }
+        ];
+    
+        // Append text elements dynamically
+        textData.forEach(({ dy, text }) => {
+            parent.append('text')
+                .attr('dy', dy)
+                .attr('id', 'temp')
+                .attr('fill', 'black')
+                .text(text);
+        });
+    };
+    
 
     const mOut = function(){
         d3.select(this)
