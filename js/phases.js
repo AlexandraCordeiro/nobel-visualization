@@ -294,7 +294,7 @@ console.log("fase 6");
   const effectiveRadius = circleRadius + gap; // Raio efetivo considerando o gap
 
   // Valor para definir deslocamento entre as categorias
-  const val = 250;
+  const val = 280;
 
   // Lista de categorias únicas no dataset
   const categories = [...new Set(laureates.map(laureate => laureate.prizeCategory))];
@@ -375,125 +375,23 @@ console.log("fase 6");
   update(); // Atualiza o SVG com os novos círculos
 
   // Função para obter uma cor única para cada categoria
-    function getColorForCategory(category) {
+  function getColorForCategory(category) {
     const colors = {
-        Physics: c6,
-        Chemistry: c3,
-        Physiology_or_Medicine: c1,
-        Literature: c4,
-        Peace: c5,
-        Economic_Sciences: c2
+        "Physics": c6,
+        "Chemistry": c3,
+        "Physiology or Medicine": c1,
+        "Literature": c4,
+        "Peace": c5,
+        "Economic Sciences": c2
     };
-    return colors[category] || yellow; // Cor padrão para categorias desconhecidas
-    }
+
+    // Remove espaços extras e garanta que o texto seja comparado corretamente
+    const trimmedCategory = category.trim();
+
+    return colors[trimmedCategory] || yellow; // Cor padrão para categorias desconhecidas
+}
     update();
 }
-
-//separa categorias por entidades (diferentes cores) A cor é dependente do gender
-/*function phase7() {
-    console.log("fase 7");
-    //se estiver na phase5() e voltar atras remove o pattern
-
-  const centerX = width / 2; // Centro horizontal
-  const centerY = height / 2; // Centro vertical
-  const circleRadius = 7; // Raio de cada círculo
-  const gap = 1; // Espaçamento entre círculos
-  const effectiveRadius = circleRadius + gap; // Raio efetivo considerando o gap
-
-  // Valor para definir deslocamento entre as categorias
-  const val = 250;
-
-  // Lista de categorias únicas no dataset
-  const categories = [...new Set(laureates.map(laureate => laureate.prizeCategory))];
-
-  // Calcular centros para cada categoria (em uma distribuição circular)
-  const centers = {};
-  const angleStep = (2 * Math.PI) / categories.length;
-
-  categories.forEach((category, index) => {
-      const angle = index * angleStep;
-      centers[category] = {
-          x: centerX + val * Math.cos(angle),
-          y: centerY + val * Math.sin(angle)
-      };
-  });
-
-  // Grupos de dados para cada categoria
-  const groups = {};
-  categories.forEach(category => {
-      groups[category] = [];
-  });
-
-  // Separar laureados por categoria
-  laureates.forEach(laureate => {
-      const category = laureate.prizeCategory;
-      if (groups[category]) {
-          groups[category].push(laureate);
-      }
-  });
-
-  // Processar cada grupo
-  data = []; // Redefine os dados
-  Object.keys(groups).forEach(groupKey => {
-      const laureates = groups[groupKey];
-      const { x: groupCenterX, y: groupCenterY } = centers[groupKey];
-      const color = getColorForCategory(groupKey); // Obtem a cor com base na categoria
-
-      let currentRadius = 0; // Raio atual da camada
-      let index = 0; // Índice para acessar laureates
-
-      while (index < laureates.length) {
-          currentRadius += effectiveRadius * 2; // Incrementa o raio da camada com base no tamanho efetivo
-          // Número de círculos na camada atual, proporcional ao comprimento da circunferência
-          const circumference = 2 * Math.PI * currentRadius;
-          const circlesInLayer = Math.min(
-              laureates.length - index,
-              Math.floor(circumference / (effectiveRadius * 2))
-          );
-
-          // Ângulo entre círculos nesta camada
-          const angleStep = (2 * Math.PI) / circlesInLayer;
-
-          // Adiciona os círculos da camada
-          for (let i = 0; i < circlesInLayer; i++) {
-              const angle = i * angleStep;
-              const x = groupCenterX + currentRadius * Math.cos(angle);
-              const y = groupCenterY + currentRadius * Math.sin(angle);
-
-              const laureate = laureates[index];
-
-              data.push({
-                  x: x,
-                  y: y,
-                  r: circleRadius,
-                  color: color,
-                  id: laureate.id,
-                  name: laureate.name,
-                  gender: laureate.gender,
-                  prizeCategory: laureate.prizeCategory,
-                  awardYear: laureate.awardYear
-              });
-              index++; // Avança para o próximo laureado
-          }
-      }
-  });
-
-  update(); // Atualiza o SVG com os novos círculos
-
-  // Função para obter uma cor única para cada categoria
-    function getColorForCategory(category) {
-    const colors = {
-        Physics: "#A69A07",
-        Chemistry: "#D7CB34",
-        Physiology_or_Medicine: "#E9DF69",
-        Literature: "#34D7A0",
-        Peace: "#34A6D7",
-        Economic_Sciences: "#D73434"
-    };
-    return colors[category] || "#888888"; // Cor padrão para categorias desconhecidas
-    }
-    update();
-}*/
 
 function phase7() {
     console.log("fase 7");
@@ -506,7 +404,7 @@ function phase7() {
     const effectiveRadius = circleRadius + gap; // Raio efetivo considerando o gap
 
     // Valor para definir deslocamento entre as categorias
-    const val = 250;
+    const val = 280;
 
     // Lista de categorias únicas no dataset
     const categories = [...new Set(laureates.map(laureate => laureate.prizeCategory))];
