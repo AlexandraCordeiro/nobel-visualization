@@ -1,3 +1,10 @@
+ /*Colors*/
+ let backColor = '#F7F1E5';
+ let yellow = "#FFC100"; //organizations
+ let terra = "#B05E27"; //female
+ let green1 = "#898121"; //male
+ let green2 = "#4C4B16";
+
 function _beeswarm(beeswarmForce, x, chartheight, r) {
   return (
     beeswarmForce()
@@ -24,7 +31,7 @@ async function _3(d3, chartwidth, margin, chartheight, x, beeswarm, data, r) {
 
   d3.map(data, d => {return d.comparison})
 
-  const colorScale = d3.scaleLinear().domain([0, 100]).range(['#FAF07F', '#A89C03'])
+  const colorScale = d3.scaleLinear().domain([0, 100]).range([yellow, green2])
 
   d3.select('body').append('div').attr('id', 'title').append('p').html('Impact Of Global Economic Crises On The Nobel Prize Amount')
 
@@ -72,11 +79,11 @@ async function _3(d3, chartwidth, margin, chartheight, x, beeswarm, data, r) {
     .attr("x2", d => x(d.data.value) + margin.left)
     .attr("y1", chartheight / 1.15 + 1) 
     .attr("y2", (d, i) => chartheight / 1.15 + (filteredData.length - i) * 20 - 10) 
-    .attr("stroke", "black") 
-    .attr("opacity", 0.5)
+    .attr("stroke", "black")
+    .attr("opacity", 1)
     .attr("stroke-width", 1)
 
-  // add labels
+  // add labels (history events)
   const labels = svg.append("g")
   labels.selectAll("text")
     .data(beeswarm(filteredData))
@@ -86,8 +93,50 @@ async function _3(d3, chartwidth, margin, chartheight, x, beeswarm, data, r) {
     .attr("y", (d, i) => (chartheight / 1.15 + (filteredData.length - i) * 20) + 10) // Bottom of the chart
     .text(d => d.data.label)
 
+  
+  // add chart explanation
+  let chartExplanation = svg.append('g')
+    .attr('id', 'chart-explanation')
+
+  let minValue = d3.min(data, d => +d.prizeValue)
+  let maxValue = d3.max(data, d => +d.prizeValue)
+  let minSize = d3.min(data, d => +d.comparison)
+  let maxSize = d3.max(data, d => +d.comparison)
+
+  let monetaryValue = chartExplanation.append('g').attr('id', 'monetary-value')
+  
+  let money = [{'id': 'minValue', 'value': minValue, 'size': minSize, 'pos': '40vw'}, {'id': 'maxValue', 'value': maxValue, 'size': maxSize, 'pos': '45vw'}]
+  monetaryValue.selectAll('circle')
+    .data(money)
+    .join('circle')
+    .attr('id', d => d.id)
+    .attr('cx', d => d.pos)
+    .attr('cy', (d, i) => (chartheight / 1.15) + (25 * (filteredData.length)))
+    .attr('r', d => r(d.size * 7))
+    .attr('stroke', 'black')
+    .attr('fill', 'none')
+    
+  
+  const colorGradient = chartExplanation.append('g').attr('id', 'color-gradient')
+
+  let colorLine = [{'id': 'colorLine','x1': '50vw', 'x2': '60vw', 'y': (chartheight / 1.15) + (20 * (filteredData.length))}]
+  colorGradient.append("foreignObject")
+  .attr("x", '50vw') // Adjust x to place it relative to the chartExplanation's transform
+  .attr("y", (chartheight / 1.15) + (25 * (filteredData.length))) // Adjust y to fit your layout
+  .attr("width", 200)
+  .attr("height", 100)
+  .append("xhtml:div") // Use the xhtml namespace for the div
+  .style("border-image-slice", 1)
+  .style("border-width", '5px')
+  .style("border-top", "10px solid")
+  .style("border-image-source", `linear-gradient(to right, ${yellow}, ${green2})`)
+
+
+  // monetaryValue.selectAll('circle')
   // only return svg
   return svg.node();
+
+
 }
 
 
@@ -139,7 +188,7 @@ async function _data(d3, r) {
   let data = []
   const d = await d3.csv('../dataset/prize_amount.csv')
     d.forEach(obj => {
-      data.push({value: +obj.year, size: +obj.compared_to_original_amount * 5, label: obj.history_events || "", comparison: +obj.compared_to_original_amount})
+      data.push({value: +obj.year, size: +obj.compared_to_original_amount * 5, label: obj.history_events || "", comparison: +obj.compared_to_original_amount, prizeValue: obj.value_sek_2023})
     })
 
   return data
