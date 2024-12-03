@@ -1,13 +1,26 @@
 let raio=280;
 svg= d3.select("svg");
+let backColor = '#F7F1E5';
+let yellow = "#FFC100"; //organizations
+let terra = "#B05E27"; //female
+let green1 = "#898121"; //male
+let green2 = "#4C4B16";
+
+let c1 = "#460002";
+let c2 = "#860A0A";
+let c3 = "#DE783A";
+let c4 = "#C3A768";
+let c5 = "#5F6B53";
+let c6 = "#15616E";
 
 //estado inicial - imagem moeda
 function phase1() {
     svg.selectAll("text").remove()
     // Dados do círculo
-    data = [{ id: 0, x: xScale(5), y: yScale(5), r: raio, color: "#E9DF69", imagePath: "../../src/moeda.png" }];
+    data = [{ id: 0, x: xScale(5), y: yScale(5), r: raio, color: yellow, imagePath: "../../src/moeda.png" }];
 
-    // Remove qualquer imagem existente para evitar duplicação
+    // Remove qualquer imagem já existente
+    svg.selectAll("clipPath").remove();
     svg.selectAll("image").remove();
 
     // Adiciona a imagem centralizada no círculo
@@ -17,9 +30,7 @@ function phase1() {
         .attr("y", data[0].y - data[0].r ) // Centraliza verticalmente
         .attr("width", 2*data[0].r) // Define a largura igual ao diâmetro do círculo
         .attr("height", 2*data[0].r); // Define a altura igual ao diâmetro do círculo
-
     update();
-
 }
 
 //estado inicial - moeda com número
@@ -28,7 +39,7 @@ function phase2() {
     svg.selectAll("image").remove();
 
     // Dados do círculo para a fase 2
-    data = [{ id: 0, x: xScale(5), y: yScale(5), r: raio, color: "#E9DF69" }];
+    data = [{ id: 0, x: xScale(5), y: yScale(5), r: raio, color: yellow }];
         
     // Atualiza a visualização (presumivelmente altera o círculo)
     update();
@@ -96,7 +107,7 @@ function phase3() {
                 x: x,
                 y: y,
                 r: circleRadius,
-                color: "#E9DF69",
+                color: yellow,
                 id: laureate.id,
                 name: laureate.name,
                 gender: laureate.gender,
@@ -152,10 +163,10 @@ function phase4() {
 
             // Determina a cor com base no gênero
             const color = laureate.gender === "male"
-                ? "#A69A07"
+                ? green1
                 : laureate.gender === "female"
-                ? "#D7CB34"
-                : "#E9DF69";
+                ? terra
+                : yellow;
 
             data.push({ // dá push apenas dos dados que quero ver
                 x: x,
@@ -221,7 +232,7 @@ function phase5() {
     Object.keys(groups).forEach(groupKey => {
         const laureates = groups[groupKey];
         const { x: groupCenterX, y: groupCenterY } = centers[groupKey];
-        const color = groupKey === 'male' ? '#A69A07' : groupKey === 'female' ? '#D7CB34' : '#E9DF69';
+        const color = groupKey === 'male' ? green1 : groupKey === 'female' ? terra : yellow;
 
         let currentRadius = 0; // Raio atual da camada
         let index = 0; // Índice para acessar laureates
@@ -364,14 +375,14 @@ console.log("fase 6");
   // Função para obter uma cor única para cada categoria
     function getColorForCategory(category) {
     const colors = {
-        Physics: "#A69A07",
-        Chemistry: "#D7CB34",
-        Physiology_or_Medicine: "#E9DF69",
-        Literature: "#34D7A0",
-        Peace: "#34A6D7",
-        Economic_Sciences: "#D73434"
+        Physics: c6,
+        Chemistry: c3,
+        Physiology_or_Medicine: c1,
+        Literature: c4,
+        Peace: c5,
+        Economic_Sciences: c2
     };
-    return colors[category] || "#888888"; // Cor padrão para categorias desconhecidas
+    return colors[category] || yellow; // Cor padrão para categorias desconhecidas
     }
     update();
 }
@@ -578,11 +589,11 @@ function phase7() {
     // Função para obter a cor com base no gênero
     function getColorForGender(gender) {
         if (gender === 'male') {
-            return "#646E68";  // Cor para male
+            return green1;  // Cor para male
         } else if (gender === 'female') {
-            return "#BAACBD";  // Cor para female
+            return terra;  // Cor para female
         } else {
-            return "#B48EAE";  // Cor para other
+            return yellow;  // Cor para other
         }
     }
 }
@@ -708,18 +719,16 @@ function phase8(){
         // Função para obter a cor com base no gênero
         function getColorForGender(gender) {
             if (gender === 'male') {
-                return "#646E68";  // Cor para male
+                return green1;  // Cor para male
             } else if (gender === 'female') {
-                return "#BAACBD";  // Cor para female
+                return terra;  // Cor para female
             } else {
-                return "#B48EAE";  // Cor para other
+                return yellow;  // Cor para other
             }
         }
     
     
 }
-
-
 
 //Marie Curie
 function phase9(){

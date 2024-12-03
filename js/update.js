@@ -18,44 +18,36 @@ function adjustScales() {
 
 
 function update() {
+    // tooltip
+  d3.select('body')
+  .append('div')
+  .attr('id', 'tooltip')
+  .attr('style', 'position: absolute; opacity: 0;')
+
     const mOver = (e, d) => {
         // e is the mouseEvent
         // d is the data
-        console.log(d);
+        //console.log(d);
     
-        const element = d3.select(e.currentTarget); // Current SVG element
-        const parent = d3.select(element.node().parentNode); // Parent of the SVG element
-    
-        // Highlight the SVG element
-        element
-            .style("stroke", "black")
-            .style("opacity", 1);
-    
-        // Array of text properties to display
-        const textData = [
-            { dy: "100px", text: d.name },
-            { dy: "120px", text: d.prizeCategory },
-            { dy: "140px", text: d.awardYear }
-        ];
-    
-        // Append text elements dynamically
-        textData.forEach(({ dy, text }) => {
-            parent.append('text')
-                .attr('dy', dy)
-                .attr('id', 'temp')
-                .attr('fill', 'black')
-                .text(text);
-        });
+        if(`${d.name}` === "undefined" && `${d.prizeCategory}` === "undefined"){
+            d3.select('#tooltip').text("");
+        }else{
+            d3.select('#tooltip').transition().duration(200).style('opacity', 1).text(`${d.name}\n${d.prizeCategory}\n${d.awardYear}`);
+            d3.select(e.currentTarget).style("stroke", "black");
+        }
     };
     
 
     const mOut = function(){
-        d3.select(this)
-            .style("stroke", "none");
-
-        d3.select(this.parentNode).selectAll('#temp').remove('#temp');
+        d3.select(this).style("stroke", "none");
+        d3.select('#tooltip').style('opacity', 0).text(" ");
     }
     
+
+    function mouseMove(e, d) {
+         d3.select('#tooltip').style('left', (e.pageX+10) + 'px').style('top', (e.pageY+10) + 'px')
+    }
+
     const circles = svg.selectAll("circle").data(data, (d) => d.id);
 
     circles.exit().transition().duration(500).attr("r", 0).remove();
@@ -77,6 +69,7 @@ function update() {
         .attr("fill", (d) => d.color)
         .on("mouseover", mOver)
         .on("mouseout", mOut)
+        .on('mousemove', (e,d)=>mouseMove(e,d))
         .transition()
         .duration(500)
         .attr("r", (d) => d.r);

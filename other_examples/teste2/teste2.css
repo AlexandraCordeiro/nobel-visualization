@@ -2,9 +2,11 @@
     font-family: "Roboto", sans-serif;
     --preto: #1A1510;
     margin:0;
+    --backColor: #F7F1E5;
 }
 body{
     overflow: hidden; /*bloqueia o scroll*/
+    background-color: var(--backColor);
 }
 
 #my-dataviz{
@@ -57,4 +59,9 @@ span{
 
 p{
     font-size:16px;
+}
+
+#tooltip{
+    white-space: pre;
+    background-color:white;
 }
