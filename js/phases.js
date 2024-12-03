@@ -1,17 +1,19 @@
 let raio=280;
 svg= d3.select("svg");
+
+/*Colors*/
 let backColor = '#F7F1E5';
 let yellow = "#FFC100"; //organizations
 let terra = "#B05E27"; //female
 let green1 = "#898121"; //male
 let green2 = "#4C4B16";
 
-let c1 = "#460002";
-let c2 = "#860A0A";
-let c3 = "#DE783A";
-let c4 = "#C3A768";
-let c5 = "#5F6B53";
-let c6 = "#15616E";
+let c1 = "#460002"; //Medicina
+let c2 = "#860A0A"; //Economia
+let c3 = "#DE783A"; //Quimica
+let c4 = "#C3A768"; //Literatura
+let c5 = "#5F6B53"; //Paz
+let c6 = "#15616E"; //Física
 
 //estado inicial - imagem moeda
 function phase1() {

@@ -1,12 +1,30 @@
 *{
-    font-family: "Roboto", sans-serif;
-    --preto: #1A1510;
     margin:0;
+
+    --jost: "Jost", sans-serif;
+    --roboto: "Roboto", serif;
+
+    /*Colors*/
+    --preto: #1A1510;
     --backColor: #F7F1E5;
+    --yellow: #FFC100;/*organizations*/
+    --terra:#B05E27; /*female*/
+    --green1: #898121; /*male*/
+    --green2: #4C4B16;
+
+    /*categorias*/ 
+    --c1: #460002;
+    --c2: #860A0A;
+    --c3 : #DE783A;
+    --c4 : #C3A768;
+    --c5 : #5F6B53;
+    --c6 : #15616E;
 }
+
 body{
     overflow: hidden; /*bloqueia o scroll*/
     background-color: var(--backColor);
+    font-family: var(--jost);
 }
 
 #my-dataviz{
@@ -16,7 +34,7 @@ body{
 }
 
 svg {
-    border: 1px solid #ddd;
+    border: 1px solid var(--backColor);
     display: block;
     margin: auto;
     width:100%;
@@ -32,6 +50,7 @@ svg {
 }
 
 #other_text{
+    font-family: var(--roboto);
     width:35%;
     position: fixed;
     bottom:30px;
@@ -41,7 +60,6 @@ svg {
 
 /*content dentro das divs*/
 h1{
-    font-family: "Cormorant Garamond", serif;
     font-size: 60px;
     font-weight: 700;
     font-style: normal;
