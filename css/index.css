@@ -122,6 +122,9 @@ h1{
     color: var(--preto);
     transform: rotateY(180deg);
     position:relative;
+    display:flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .flip-card-back p{
@@ -129,9 +132,7 @@ h1{
     font-size:3rem;
     font-weight: 500;
     /*line-height: 2.9rem;*/
-    position:absolute;
-    top:50%;
-    transform: translateY(-50%);
+    max-width:98%;
   }
 
   .flip-card-front img{
