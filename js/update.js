@@ -32,7 +32,11 @@ function update() {
         if(`${d.name}` === "undefined" && `${d.prizeCategory}` === "undefined"){
             d3.select('#tooltip').text("");
         }else{
-            d3.select('#tooltip').transition().duration(200).style('opacity', 1).text(`${d.name}\n${d.prizeCategory}\n${d.awardYear}`);
+            d3.select('#tooltip')
+                .transition()
+                .duration(200)
+                .style('opacity', 1)
+                .text(`${d.name}\n${d.prizeCategory}\n${d.awardYear}`);
             d3.select(e.currentTarget).style("stroke", "black");
         }
     };
@@ -45,7 +49,7 @@ function update() {
     
 
     function mouseMove(e, d) {
-         d3.select('#tooltip').style('left', (e.pageX+10) + 'px').style('top', (e.pageY+10) + 'px')
+        d3.select('#tooltip').style('left', (e.pageX+10) + 'px').style('top', (e.pageY+10) + 'px')
     }
 
     const circles = svg.selectAll("circle").data(data, (d) => d.id);

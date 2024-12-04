@@ -15,8 +15,18 @@ let c4 = "#C3A768"; //Literatura
 let c5 = "#5F6B53"; //Paz
 let c6 = "#15616E"; //Física
 
+let title = document.querySelector("#title");
+let other_text = document.querySelector("#other_text");
+let body = document.querySelector("body");
+let section = document.querySelector("section");
+let maxPhase=10;
+
 //estado inicial - imagem moeda
-function phase1() {
+/*function phase0() {
+    other_text.style.opacity = "1";
+    title.style.opacity = "1";
+    section.style.display = "none";
+
     svg.selectAll("text").remove()
     // Dados do círculo
     data = [{ id: 0, x: xScale(5), y: yScale(5), r: raio, color: yellow, imagePath: "../../src/moeda.png" }];
@@ -33,10 +43,11 @@ function phase1() {
         .attr("width", 2*data[0].r) // Define a largura igual ao diâmetro do círculo
         .attr("height", 2*data[0].r); // Define a altura igual ao diâmetro do círculo
     update();
-}
+}*/
 
 //estado inicial - moeda com número
-function phase2() {
+function phase1() {
+    section.style.display = "flex";
     // Remover qualquer imagem existente para evitar duplicação
     svg.selectAll("image").remove();
 
@@ -60,10 +71,16 @@ function phase2() {
         .attr("font-size", "100px")  // Tamanho da fonte
         .attr("fill", "#000000")  // Cor do texto
         .text("1012");
+
+
+    //other_text.style.opacity = "0";
+    //title.style.opacity = "0";
+    /*body.removeChild(other_text);
+    body.removeChild(title);*/
 }
 
 //1012 bolas
-function phase3() {
+function phase2() {
     console.log("fase 3");
 
     svg.selectAll("text").remove()
@@ -125,7 +142,7 @@ function phase3() {
 }
 
 //separa por cores entidades/género 
-function phase4() {
+function phase3() {
     console.log("fase 4");
 
     const centerX = width / 2; // Centro da grelha
@@ -191,7 +208,7 @@ function phase4() {
 }
 
 //separa por grupos de cores entidades/género
-function phase5() {
+function phase4() {
     console.log("fase 5");
 
 
@@ -281,7 +298,7 @@ function phase5() {
 }
 
 //separa por categorias
-function phase6() {
+function phase5() {
 
 console.log("fase 6");
 
@@ -393,7 +410,7 @@ console.log("fase 6");
     update();
 }
 
-function phase7() {
+function phase6() {
     console.log("fase 7");
     //se estiver na phase5() e voltar atras remove o pattern
 
@@ -498,7 +515,7 @@ function phase7() {
     }
 }
 
-function phase8(){
+function phase7(){
 
         console.log("fase 8");
     
@@ -631,7 +648,7 @@ function phase8(){
 }
 
 //Marie Curie
-function phase9(){
+function phase8(){
     console.log("FASE 9");
     const url= "https://www.wikidata.org/wiki/Q7186"; //url da pagina completa da wikidata
     console.log(getWikidataId(url));
@@ -688,19 +705,26 @@ function phase9(){
   update();
 }
 
-function phase10(){
+function phase9(){
     console.log("FASE 10");
     //remove o pattern ao avançar para a phase6();
     svg.selectAll("pattern").remove()
     svg.selectAll("image").remove();
+    section.style.display = "flex";
+    //other_text.style.opacity = "0";
+    //title.style.opacity = "0";
+}
+
+function phase10(){
+    
 }
 
 function initializePhases() {
-    maxPhase = 10;
     runPhase(1);
 }
 
 function runPhase(phase) {
+    //if (phase === 0) phase0();
     if (phase === 1) phase1();
     if (phase === 2) phase2();
     if (phase === 3) phase3();
@@ -711,11 +735,8 @@ function runPhase(phase) {
     if (phase === 8) phase8();
     if (phase === 9) phase9();
     if (phase === 10) phase10();
+
 }
-
-
-
-
 
 
 // URL da Wikidata
