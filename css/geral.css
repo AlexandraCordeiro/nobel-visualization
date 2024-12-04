@@ -26,3 +26,11 @@ body{
     background-color: var(--backColor);
     font-family: var(--jost);
 }
+
+#tooltip{
+    white-space: pre;
+    background-color: var(--backColor);
+    border: 2px solid var(--green2);
+    padding: 10px;
+    border-radius:10px;
+}

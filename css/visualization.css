@@ -34,13 +34,6 @@
        height:100%;
    }
    
-   #tooltip{
-       white-space: pre;
-       background-color: var(--backColor);
-       border: 2px solid var(--green2);
-       padding: 10px;
-       border-radius:10px;
-   }
    
    
    /*DOTS*/
