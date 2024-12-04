@@ -145,3 +145,32 @@
         text-align: right;
         margin-top: auto; /* Empurra o elemento para o final */
      }
+
+
+
+
+     #label{
+        position:fixed;
+        top:0;
+        right:0;
+        displaY:flex;
+        flex-direction: column;
+        width:10%;
+        gap:5px;
+        padding:20px;
+        justify-content: center;
+        height:100%;
+     }
+
+     #label div{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap:5px;
+     }
+
+     .label_color{
+      width:30px;
+      height:30px;
+      border-radius:10px;
+    }

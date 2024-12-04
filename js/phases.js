@@ -4,6 +4,7 @@ svg= d3.select("svg");
 let knownName = document.getElementById("knownName");
 let category = document.getElementById("category");
 let extra_info = document.getElementById("add_info");
+let label = document.getElementById("label");
 
 knownName.innerText = " ";
 category.innerText = " ";
@@ -55,6 +56,10 @@ let maxPhase=10;
 
 //estado inicial - moeda com número
 function phase1() {
+    label.innerHTML = ""; // Limpa conteúdo existente\
+    knownName.innerText = " ";
+    category.innerText = " ";
+    extra_info.innerText = " ";
     section.style.display = "flex";
     // Remover qualquer imagem existente para evitar duplicação
     svg.selectAll("image").remove();
@@ -90,8 +95,12 @@ function phase1() {
 //1012 bolas
 function phase2() {
     console.log("fase 3");
-
+    label.innerHTML = ""; // Limpa conteúdo existente
     svg.selectAll("text").remove()
+    knownName.innerText = " ";
+    category.innerText = " ";
+    extra_info.innerText = " ";
+    label.innerHTML = ""; // Limpa conteúdo existente
 
     const centerX = width / 2; // Centro da grelha
     const centerY = height / 2; // Centro da grelha
@@ -152,6 +161,12 @@ function phase2() {
 //separa por cores entidades/género 
 function phase3() {
     console.log("fase 4");
+    svg.selectAll("text").remove()
+    knownName.innerText = " ";
+    category.innerText = " ";
+    extra_info.innerText = " ";
+    label.innerHTML = ""; // Limpa conteúdo existente
+    
 
     const centerX = width / 2; // Centro da grelha
     const centerY = height / 2; // Centro da grelha
@@ -166,6 +181,7 @@ function phase3() {
 
     // Processa apenas os laureados disponíveis
     const totalLaureates = laureates.length;
+    const categories = {};
 
     while (index < totalLaureates) {
         currentRadius += effectiveRadius * 2; // Incrementa o raio da camada com base no tamanho efetivo
@@ -208,17 +224,49 @@ function phase3() {
                 wikidata: laureate.wikidata,
             });
             index++; // Avança para o próximo laureado
+
+
+            // Atualiza contagem por categoria
+            if (!categories[laureate.gender]) {
+                categories[laureate.gender] = 0;
+            }
+            categories[laureate.gender]++;
+
         }
     }
 
-    update(); // Atualiza o SVG com os novos círculos
+    /*cria isto dinamicamente consoante as categorias*/ 
+    label.innerHTML = ""; // Limpa conteúdo existente
 
+    Object.keys(categories).forEach(gender => {
+        const div = document.createElement("div");
+        div.classList.add("content_label");
+
+        const labelColor = document.createElement("div");
+        labelColor.classList.add("label_color");
+        labelColor.style.backgroundColor = gender === "male" ? green1 : gender === "female" ? terra : yellow;
+
+        const labelText = document.createElement("p");
+        labelText.classList.add("label_text");
+        labelText.textContent = `${gender} (${categories[gender]})`;
+
+        div.appendChild(labelColor);
+        div.appendChild(labelText);
+        label.appendChild(div);
+    });
+
+    update(); // Atualiza o SVG com os novos círculos
 }
 
 //separa por grupos de cores entidades/género
 function phase4() {
-    console.log("fase 5");
 
+    console.log("fase 5");
+    svg.selectAll("text").remove()
+    knownName.innerText = " ";
+    category.innerText = " ";
+    extra_info.innerText = " ";
+    label.innerHTML = ""; // Limpa conteúdo existente
 
     const centerX = width / 2; //Centro horizontal
     const centerY = height / 2; // Centro vertical
@@ -256,6 +304,7 @@ function phase4() {
 
     // Processar cada grupo
     data = []; // Redefine os dados
+    const categories = {};
     Object.keys(groups).forEach(groupKey => {
         const laureates = groups[groupKey];
         const { x: groupCenterX, y: groupCenterY } = centers[groupKey];
@@ -301,12 +350,33 @@ function phase4() {
         }
     });
 
+    Object.keys(categories).forEach(gender => {
+        const div = document.createElement("div");
+        div.classList.add("content_label");
+
+        const labelColor = document.createElement("div");
+        labelColor.classList.add("label_color");
+        labelColor.style.backgroundColor = gender === "male" ? green1 : gender === "female" ? terra : yellow;
+
+        const labelText = document.createElement("p");
+        labelText.classList.add("label_text");
+        labelText.textContent = `${gender} (${categories[gender]})`;
+
+        div.appendChild(labelColor);
+        div.appendChild(labelText);
+        label.appendChild(div);
+    });
 
     update();
 }
 
 //separa por categorias
 function phase5() {
+label.innerHTML = ""; // Limpa conteúdo existente
+knownName.innerText = " ";
+category.innerText = " ";
+extra_info.innerText = " ";
+svg.selectAll("text").remove()
 
 console.log("fase 6");
 
@@ -397,7 +467,23 @@ console.log("fase 6");
       }
   });
 
-  update(); // Atualiza o SVG com os novos círculos
+  Object.keys(groups).forEach(category => {
+    const div = document.createElement("div");
+    div.classList.add("content_label");
+
+    const labelColor = document.createElement("div");
+    labelColor.classList.add("label_color");
+    labelColor.style.backgroundColor = getColorForCategory(category); // Obtém a cor associada à categoria
+
+    const labelText = document.createElement("p");
+    labelText.classList.add("label_text");
+    labelText.textContent = `${category} (${groups[category].length})`; // Exibe o nome da categoria e o número de laureados
+
+    div.appendChild(labelColor);
+    div.appendChild(labelText);
+    label.appendChild(div);
+});
+
 
   // Função para obter uma cor única para cada categoria
   function getColorForCategory(category) {
@@ -412,14 +498,21 @@ console.log("fase 6");
 
     // Remove espaços extras e garanta que o texto seja comparado corretamente
     const trimmedCategory = category.trim();
-
     return colors[trimmedCategory] || yellow; // Cor padrão para categorias desconhecidas
 }
+
+
+
     update();
 }
 
 function phase6() {
     console.log("fase 7");
+    label.innerHTML = ""; // Limpa conteúdo existente
+    knownName.innerText = " ";
+    category.innerText = " ";
+    extra_info.innerText = " ";
+    svg.selectAll("text").remove()
     //se estiver na phase5() e voltar atras remove o pattern
 
     const centerX = width / 2; // Centro horizontal
@@ -509,6 +602,33 @@ function phase6() {
         }
     });
 
+    // Conta os laureados por gênero
+    const genderCounts = {};
+    laureates.forEach(laureate => {
+        const gender = laureate.gender;
+        if (!genderCounts[gender]) {
+            genderCounts[gender] = 0;
+        }
+        genderCounts[gender]++;
+    });
+        // Cria labels para cada gênero
+    Object.keys(genderCounts).forEach(gender => {
+        const div = document.createElement("div");
+        div.classList.add("content_label");
+
+        const labelColor = document.createElement("div");
+        labelColor.classList.add("label_color");
+        labelColor.style.backgroundColor = getColorForGender(gender); // Usa a cor associada ao gênero
+
+        const labelText = document.createElement("p");
+        labelText.classList.add("label_text");
+        labelText.textContent = `${gender} (${genderCounts[gender]})`; // Nome do gênero e número de laureados
+
+        div.appendChild(labelColor);
+        div.appendChild(labelText);
+        label.appendChild(div);
+    });
+
     update(); // Atualiza o SVG com os novos círculos
 
     // Função para obter a cor com base no gênero
@@ -521,13 +641,17 @@ function phase6() {
             return yellow;  // Cor para other
         }
     }
+
+    
+
 }
 
 function phase7(){
-
+    svg.selectAll("text").remove()
     knownName.innerText = " ";
     category.innerText = " ";
     extra_info.innerText = " ";
+    label.innerHTML = ""; // Limpa conteúdo existente
 
         console.log("fase 8");
     
@@ -643,6 +767,33 @@ function phase7(){
             });
         });
     
+            // Conta os laureados por gênero
+        const genderCounts = {};
+        laureates.forEach(laureate => {
+            const gender = laureate.gender;
+            if (!genderCounts[gender]) {
+                genderCounts[gender] = 0;
+            }
+            genderCounts[gender]++;
+        });
+            // Cria labels para cada gênero
+        Object.keys(genderCounts).forEach(gender => {
+            const div = document.createElement("div");
+            div.classList.add("content_label");
+
+            const labelColor = document.createElement("div");
+            labelColor.classList.add("label_color");
+            labelColor.style.backgroundColor = getColorForGender(gender); // Usa a cor associada ao gênero
+
+            const labelText = document.createElement("p");
+            labelText.classList.add("label_text");
+            labelText.textContent = `${gender} (${genderCounts[gender]})`; // Nome do gênero e número de laureados
+
+            div.appendChild(labelColor);
+            div.appendChild(labelText);
+            label.appendChild(div);
+        });
+        
         update(); // Atualiza o SVG com os novos círculos
     
         // Função para obter a cor com base no gênero
@@ -655,21 +806,25 @@ function phase7(){
                 return yellow;  // Cor para other
             }
         }
-    
-    
 }
 
 //Marie Curie
 function phase8(){
+    
+    label.innerHTML = ""; // Limpa conteúdo existente
+    knownName.innerText = " ";
+    category.innerText = " ";
+    extra_info.innerText = " ";
+    
     knownName.innerText = "Marie Curie";
     category.innerHTML = "Physics (1903) <br> Chemistry (1911)";
-    extra_info.innerHTML ="<p>única mulher laureada com 2 prémios</p><p>primeira laureada com 2 prémios</p>"
+    extra_info.innerHTML ="<p>first winner of 2 Nobel Prizes</p><p>the only woman that have won two Nobel Prizes</p>"
 
     console.log("FASE 9");
     const url= "https://www.wikidata.org/wiki/Q7186"; //url da pagina completa da wikidata
     console.log(getWikidataId(url));
   //const backgroundImageURL = "../../marie_curie.png";
-  const svg = d3.select("svg");
+    const svg = d3.select("svg");
 
   (async () => {
     try {
@@ -721,7 +876,76 @@ function phase8(){
   update();
 }
 
+//Egas Moniz
+///REVER ISTO
 function phase9(){
+    svg.selectAll("text").remove()
+    label.innerHTML = ""; // Limpa conteúdo existente
+    knownName.innerText = " ";
+    category.innerText = " ";
+    extra_info.innerText = " ";
+
+    knownName.innerText = "Egas Moniz";
+    category.innerHTML = "Medicina ()";
+    extra_info.innerHTML ="Portuguese"
+
+    console.log("FASE 9");
+    const url= "https://www.wikidata.org/wiki/Q273219"; //url da pagina completa da wikidata
+    console.log(getWikidataId(url));
+    const svg = d3.select("svg");
+
+  (async () => {
+    try {
+        const wikidataId = getWikidataId(url); // Obtém o ID da Wikidata a partir da URL
+        if (wikidataId) {
+           
+           const backgroundImageURL = await fetchWikidataImage(wikidataId); // Aguarda o resultado da Promise
+
+                // Limpa o SVG antes de adicionar elementos
+            //svg.selectAll("*").remove();
+
+            // Define um padrão para a imagem
+            const defs = svg.append("defs");
+            defs.append("pattern")
+                .attr("id", "circle-bg") // ID único do padrão
+                //.attr("patternUnits", "objectBoundingBox")
+                .attr("width", 1)
+                .attr("height", 1)
+                .append("image")
+                .attr("xlink:href", backgroundImageURL)
+                .attr("preserveAspectRatio", "xMidYMid slice") // Ajusta a proporção
+                .attr("width", raio*2) // Ajuste para o tamanho correto da imagem
+                .attr("height", raio*2); // Ajuste para o tamanho correto da imagem
+            
+        } else {
+            console.log("Link da Wikidata inválido.");
+        }
+    } catch (error) {
+        console.error("Erro ao buscar a imagem da Wikidata:", error);
+    }
+})();
+    
+
+  // Adiciona o círculo com o padrão de fundo
+  data = [
+      { id: 0, x: xScale(5), y: yScale(5), r: raio, color: "url(#circle-bg)" }
+  ];
+
+  svg.selectAll("circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y)
+      .attr("r", d => d.r)
+      .attr("fill", d => d.color)
+      .attr("id", "backgroundCircle"); // Adiciona um ID para o círculo
+
+  update();
+}
+
+function phase10(){
+
     console.log("FASE 10");
     //remove o pattern ao avançar para a phase6();
     svg.selectAll("pattern").remove()
@@ -730,12 +954,6 @@ function phase9(){
     knownName.innerText = " ";
     category.innerText = " ";
     extra_info.innerText = " ";
-    //other_text.style.opacity = "0";
-    //title.style.opacity = "0";
-}
-
-function phase10(){
-
 }
 
 function initializePhases() {

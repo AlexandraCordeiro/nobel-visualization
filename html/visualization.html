@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
-    <link rel="shortcut icon" type="img/png" href="src/moeda.png">
+    <link rel="shortcut icon" type="img/png" href="../src/moeda.png">
     <title>Nobel Prizes Visualization</title>
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/visualization.css">
@@ -22,16 +22,16 @@
     <!--Baseado em https://codepen.io/slcr/pen/QKBgoX-->
     <section>
         <ul class="dots">
-            <li data-phase="1" class="active"><span>Número total de laureados</span></li>
-            <li data-phase="2"><span>Laureados</span></li>
-            <li data-phase="3"><span>Laureados por género/entidade</span></li>
-            <li data-phase="4"><span>Laureados por género/entidade separados em grupos</span></li>
-            <li data-phase="5"><span>Laureados por categoria</span></li>
-            <li data-phase="6"><span>Laureados por categoria e género</span></li>
-            <li data-phase="7"><span>Laureados por categoria e género separado</span></li>
-            <li data-phase="8"><span>Primeiro galardoado com dois prémios</span></li>
-            <li data-phase="9"><span>Texto 9</span></li>
-            <li data-phase="10"><span>Texto 10</span></li>
+            <li data-phase="1" class="active"><span>Total number of laureates</span></li>
+            <li data-phase="2"><span>Laureates</span></li>
+            <li data-phase="3"><span>Laureates by gender/entity</span></li>
+            <li data-phase="4"><span>Laureates by gender/entity separated into groups</span></li>
+            <li data-phase="5"><span>Laureates by category</span></li>
+            <li data-phase="6"><span>Laureates by category and gender/entity</span></li>
+            <li data-phase="7"><span>Laureates by category and gender/entity separated into groups</span></li>
+            <li data-phase="8"><span>First winner of two Nobel Prizes</span></li>
+            <li data-phase="9"><span>Portugal in the Nobels – Medicine</span></li>
+            <li data-phase="10"><span>Portugal in the Nobels – Literature</span></li>
         </ul>
     </section>
 
@@ -43,6 +43,21 @@
 
     <div id="my_dataviz">
         <svg id="bubble-chart"></svg>
+    </div>
+
+    <div id="label">
+      <!--<div>
+        <div id="color1"></div>
+        <p>Organization</p>
+      </div>
+      <div>
+        <div id="color2"></div>
+        <p>Female</p>
+      </div>
+      <div>
+        <div id="color3"></div>
+        <p>Male</p>
+      </div>-->
     </div>
 
     <script src="https://d3js.org/d3.v6.min.js"></script>
