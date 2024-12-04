@@ -1,6 +1,14 @@
 let raio=280;
 svg= d3.select("svg");
 
+let knownName = document.getElementById("knownName");
+let category = document.getElementById("category");
+let extra_info = document.getElementById("add_info");
+
+knownName.innerText = " ";
+category.innerText = " ";
+extra_info.innerText = " ";
+
 /*Colors*/
 let backColor = '#F7F1E5';
 let yellow = "#FFC100"; //organizations
@@ -517,6 +525,10 @@ function phase6() {
 
 function phase7(){
 
+    knownName.innerText = " ";
+    category.innerText = " ";
+    extra_info.innerText = " ";
+
         console.log("fase 8");
     
         const centerX = width / 2; // Centro horizontal
@@ -649,6 +661,10 @@ function phase7(){
 
 //Marie Curie
 function phase8(){
+    knownName.innerText = "Marie Curie";
+    category.innerHTML = "Physics (1903) <br> Chemistry (1911)";
+    extra_info.innerHTML ="<p>única mulher laureada com 2 prémios</p><p>primeira laureada com 2 prémios</p>"
+
     console.log("FASE 9");
     const url= "https://www.wikidata.org/wiki/Q7186"; //url da pagina completa da wikidata
     console.log(getWikidataId(url));
@@ -711,12 +727,15 @@ function phase9(){
     svg.selectAll("pattern").remove()
     svg.selectAll("image").remove();
     section.style.display = "flex";
+    knownName.innerText = " ";
+    category.innerText = " ";
+    extra_info.innerText = " ";
     //other_text.style.opacity = "0";
     //title.style.opacity = "0";
 }
 
 function phase10(){
-    
+
 }
 
 function initializePhases() {
