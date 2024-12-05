@@ -59,13 +59,21 @@ async function _3(d3, chartwidth, margin, chartheight, x, beeswarm, data, r) {
     .data(d => beeswarm(data))
     .join("circle")
     .attr('fill', d => colorScale(d.data.comparison))
-    .attr("fill-opacity", 0.8)
-    .attr("cx", d => d.x)
-    .attr("cy", d => d.y)
-    .attr("r", d => r(d.data.size))
+    .attr("fill-opacity", 0.1)
+    .attr("cx", () => Math.random() * window.innerWidth) 
+    .attr("cy", () => Math.random() * window.innerHeight) 
+    .attr("r",0)
+    
+    
     .on('mouseover', (e, d) => mouseOver(e, d))
     .on('mouseout', (e, d) => mouseOut(e, d))
-    .on('mousemove', (e, d) => mouseMove(e, d));
+    .on('mousemove', (e, d) => mouseMove(e, d))
+    .transition()  
+    .attr("r", d => r(d.data.size)) 
+    .attr("cx", d => d.x)
+    .attr("cy", d => d.y)
+    .style("fill-opacity", 0.9)
+    .duration(1000)
 
     
   // lines for history events
@@ -78,7 +86,7 @@ async function _3(d3, chartwidth, margin, chartheight, x, beeswarm, data, r) {
     .attr("x1", d => x(d.data.value) + margin.left) 
     .attr("x2", d => x(d.data.value) + margin.left)
     .attr("y1", chartheight / 1.15 + 1) 
-    .attr("y2", (d, i) => chartheight / 1.15 + (filteredData.length - i) * 20 - 10) 
+    .attr("y2", (d, i) => chartheight / 1.15 + (filteredData.length - i) * 15 - 10) 
     .attr("stroke", "black")
     .attr("opacity", 1)
     .attr("stroke-width", 1)
@@ -89,8 +97,8 @@ async function _3(d3, chartwidth, margin, chartheight, x, beeswarm, data, r) {
     .data(beeswarm(filteredData))
     .join("text")
     .attr("class", "label")
-    .attr("x", d => x(d.data.value) + margin.left - 2) // x-position of the line
-    .attr("y", (d, i) => (chartheight / 1.15 + (filteredData.length - i) * 20) + 10) // Bottom of the chart
+    .attr("x", d => x(d.data.value) + margin.left - 2)
+    .attr("y", (d, i) => (chartheight / 1.15 + (filteredData.length - i) * 15) + 10)
     .text(d => d.data.label)
 
   
@@ -98,6 +106,7 @@ async function _3(d3, chartwidth, margin, chartheight, x, beeswarm, data, r) {
   let chartExplanation = svg.append('g')
     .attr('id', 'chart-explanation')
 
+  chartExplanation.attr("transform", `translate(${10}, ${margin.top})`);
   let minValue = d3.min(data, d => +d.prizeValue)
   let maxValue = d3.max(data, d => +d.prizeValue)
   let minSize = d3.min(data, d => +d.comparison)
@@ -105,38 +114,95 @@ async function _3(d3, chartwidth, margin, chartheight, x, beeswarm, data, r) {
 
   let monetaryValue = chartExplanation.append('g').attr('id', 'monetary-value')
   
-  let money = [{'id': 'minValue', 'value': minValue, 'size': minSize, 'pos': '40vw'}, {'id': 'maxValue', 'value': maxValue, 'size': maxSize, 'pos': '45vw'}]
+
+  let minValuePos, maxValuePos, colorGradientPos, labelsHeight, titleHeight
+  minValuePos = 25
+  maxValuePos = 35
+  colorGradientPos = 55
+  titleHeight = (chartheight / 1.15) + (20 * (filteredData.length))
+  labelsHeight = (chartheight / 1.15) + (20 * (filteredData.length)) + 70
+  let money = [{'id': 'minValue', 'value': minValue, 'size': minSize, 'pos': `${minValuePos}vw`, 'textPos': `${minValuePos - 5}vw`}, {'id': 'maxValue', 'value': maxValue, 'size': maxSize, 'pos': `${maxValuePos}vw`, 'textPos': `${maxValuePos}vw`}]
+
+  
+
   monetaryValue.selectAll('circle')
     .data(money)
     .join('circle')
     .attr('id', d => d.id)
-    .attr('cx', d => d.pos)
-    .attr('cy', (d, i) => (chartheight / 1.15) + (25 * (filteredData.length)))
+    .attr('cx', d => d.textPos)
+    .attr('cy', labelsHeight)
     .attr('r', d => r(d.size * 7))
     .attr('stroke', 'black')
     .attr('fill', 'none')
-    
   
-  const colorGradient = chartExplanation.append('g').attr('id', 'color-gradient')
+  // Append text for minValue and maxValue
+  monetaryValue.selectAll('.value-text') 
+  .data(money)
+  .join('text')
+  .attr('class', 'value-text')
+  .attr('x', d => d.textPos)
+  .attr('y', labelsHeight + r(maxValue) )
+  .attr('text-anchor', 'middle')
+  .text(d => d.value);
 
-  let colorLine = [{'id': 'colorLine','x1': '50vw', 'x2': '60vw', 'y': (chartheight / 1.15) + (20 * (filteredData.length))}]
-  colorGradient.append("foreignObject")
-  .attr("x", '50vw') // Adjust x to place it relative to the chartExplanation's transform
-  .attr("y", (chartheight / 1.15) + (25 * (filteredData.length))) // Adjust y to fit your layout
-  .attr("width", 200)
+  // Title text
+  let titleSekValue = ["Monetary Value December 2023 (SEK)"];
+
+  monetaryValue.append("foreignObject")
+  .attr('x', `${minValuePos - 5}vw`)
+  .attr("y", titleHeight)
+  .attr("width", '15vw')
+  .attr('padding-bottom', '10px')
   .attr("height", 100)
-  .append("xhtml:div") // Use the xhtml namespace for the div
-  .style("border-image-slice", 1)
-  .style("border-width", '5px')
-  .style("border-top", "10px solid")
-  .style("border-image-source", `linear-gradient(to right, ${yellow}, ${green2})`)
+  .attr("class", "text")
+  .append("xhtml:div")
+  .style("text-align", "center")
+  .style("white-space", "wrap")
+  .text("Monetary Value December 2023 (SEK)");
 
+  const colorGradient = chartExplanation.append('g').attr('id', 'color-gradient')
+  
+  let group = colorGradient.append("foreignObject")
+    .attr("x", `${colorGradientPos}vw`)
+    .attr("y", labelsHeight)
+    .attr("width", '15vw') 
+    .attr("height", 100)
+    .append("xhtml:div")
+    .style("display", "flex") 
+    .style("align-items", "center")
+    .style("justify-content", "space-between")
+    .style("border-image-slice", 1)
+    .style("border-width", '5px')
+    .style("border-top", "20px solid")
+    .style("border-image-source", `linear-gradient(to right, ${yellow}, ${green2})`);
 
-  // monetaryValue.selectAll('circle')
+  group.append("xhtml:p")
+    .style("margin", "0") 
+    .style("padding", "0 1px")
+    .text(`${minSize}`)
+    .attr("class", "text")
+
+  group.append("xhtml:p")
+    .style("margin", "0")
+    .style("padding", "0 1px") 
+    .text(`${maxSize}`)
+    .attr("class", "text")
+  
+  let titleCompared = ["Value in % compared to original amount (in 1901)"];
+
+  colorGradient.append("foreignObject")
+  .attr("x", `${colorGradientPos}vw`)
+  .attr("y", titleHeight)
+  .attr("width", '15vw')
+  .attr("height", 50)
+  .attr("class", "text")
+  .append("xhtml:div")
+  .style("white-space", "wrap")
+  .style("text-align", "center")
+  .text(titleCompared);
+
   // only return svg
   return svg.node();
-
-
 }
 
 
@@ -154,8 +220,8 @@ function _x(d3, data, chartwidth, margin) {
 function _r(d3, width, height) {
   return (
     d3.scaleLog(
-      [400, 1000],
-      [15, Math.sqrt(width * height) / 30]
+      [100, 1000],
+      [1, Math.sqrt(width * height) / 30]
     )
   )
 }

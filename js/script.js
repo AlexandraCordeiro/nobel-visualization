@@ -1,9 +1,10 @@
 import define from "./index.js";
 import map from "./map.js";
+import wordCloud from "./words.js"
 import {Runtime, Library, Inspector} from "./runtime.js";
 
 
-let chart = 1
+let chart = 2
 
 if (chart === 1) {
   const runtime = new Runtime();
@@ -13,3 +14,9 @@ if (chart === 1) {
 if (chart === 2) {
   map()
 }
+
+
+if (chart === 3) {
+  wordCloud("../dataset/pronouns_word_cloud.csv");
+}
+
