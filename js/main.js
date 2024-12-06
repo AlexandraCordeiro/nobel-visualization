@@ -1,4 +1,3 @@
-let svg;
 let phase = 1;
 let totalCircles = 0;
 const width = window.innerWidth;

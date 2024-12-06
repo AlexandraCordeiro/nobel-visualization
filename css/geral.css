@@ -33,4 +33,5 @@ body{
     border: 2px solid var(--green2);
     padding: 10px;
     border-radius:10px;
+    z-index: 100;
 }
