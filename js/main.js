@@ -1,11 +1,14 @@
 let svg;
 let phase = 1;
-let totalCircles = 0;
+let maxPhase=19;
+//let totalCircles = 0;
 const width = window.innerWidth;
 const height = window.innerHeight;
-import initializePhases from "./phases.js";
+import {initializePhases, runPhase} from "./phases.js";
 //import { initializeScales, adjustScales } from "./update.js";
 import { initializeScales} from "./update.js";
+import { loadDataset } from "./data.js";
+
 
 
 window.onload = function () {

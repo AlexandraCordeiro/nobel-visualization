@@ -28,7 +28,6 @@ let title = document.querySelector("#title");
 let other_text = document.querySelector("#other_text");
 let body = document.querySelector("body");
 let section = document.querySelector("section");
-let maxPhase=19;
 
 
 import define from "./index.js";
@@ -53,8 +52,6 @@ originalHeight = height;
 
 //estado inicial - moeda com número
 function phase1() { 
-    
-    
     clean();
     section.style.display = "flex";
     // Remover qualquer imagem existente para evitar duplicação
@@ -80,7 +77,6 @@ function phase1() {
         .attr("font-size", "100px")  // Tamanho da fonte
         .attr("fill", "#000000")  // Cor do texto
         .text("1012");
-
 
     //other_text.style.opacity = "0";
     //title.style.opacity = "0";
@@ -995,9 +991,8 @@ export function initializePhases() {
     runPhase(1);
 }
 
-export default initializePhases;
 
-function runPhase(phase) {
+export function runPhase(phase) {
     //adjustScales();
     //if (phase === 0) phase0();
     if (phase === 1) phase1();
@@ -1066,3 +1061,5 @@ function clean(){
     category.innerText = " ";
     extra_info.innerText = " ";
 }
+
+export default {initializePhases, runPhase};

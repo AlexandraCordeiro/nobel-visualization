@@ -1,8 +1,11 @@
-let data = [];
-let laureates = [];
-const laureatesFile = "../../dataset/laureates_data.csv";
 
-function loadDataset(callback) {
+
+export function loadDataset(callback) {
+    let data = [];
+    let laureates = [];
+    const laureatesFile = "../../dataset/laureates_data.csv";
+    let totalCircles=0;
+
     d3.csv(laureatesFile, (d) => ({
         id: +d.id,
         name: d.knownName,
@@ -20,3 +23,5 @@ function loadDataset(callback) {
             console.error("Erro ao carregar os dados:", error);
         });
 }
+
+export default {loadDataset};
