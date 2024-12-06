@@ -3,6 +3,10 @@ let phase = 1;
 let totalCircles = 0;
 const width = window.innerWidth;
 const height = window.innerHeight;
+import initializePhases from "./phases.js";
+//import { initializeScales, adjustScales } from "./update.js";
+import { initializeScales} from "./update.js";
+
 
 window.onload = function () {
     svg = d3.select("svg");

@@ -1,23 +1,29 @@
-let xScale, yScale, originalWidth, originalHeight;
+let data = [];
+let svg = d3.select("#bubble-chart");
 
-function initializeScales(width, height) {
+export function initializeScales(width, height) {
+    let xScale, yScale, originalWidth, originalHeight;
     xScale = d3.scaleLinear().domain([0, 10]).range([0, width]);
     yScale = d3.scaleLinear().domain([0, 10]).range([0, height]);
     originalWidth = width;
     originalHeight = height;
 }
 
-function adjustScales() {
+
+
+/*export function adjustScales() {
+    let xScale, yScale, originalWidth, originalHeight;
     const newWidth = window.innerWidth;
     const newHeight = newWidth * (originalHeight / originalWidth);
     svg.attr("width", newWidth).attr("height", newHeight);
     xScale.range([0, newWidth]);
     yScale.range([0, newHeight]);
-}
+}*/
+
+//export default {initializeScales, adjustScales};
 
 
-
-function update() {
+export function update() {
     // tooltip
   d3.select('body')
   .append('div')
@@ -78,3 +84,6 @@ function update() {
         .duration(500)
         .attr("r", (d) => d.r);
 }
+
+
+export default {initializeScales, update};

@@ -8,14 +8,28 @@
     <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
     <link rel="shortcut icon" type="img/png" href="../src/moeda.png">
     <title>Nobel Prizes Visualization</title>
+
+     <!--roboto e Jost-->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+ 
+
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/visualization.css">
     <link rel="stylesheet" href="../css/geral.css">
 
-    <!--roboto e Jost-->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <!-- Resources -->
+    <!-- Load d3-cloud -->
+    <script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script>
+    
+    <!-- d3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <!-- beeswarm chart -->
+    <link rel="stylesheet" type="text/css" href="../css/inspector.css">
+    <link href="../css/style.css" rel="stylesheet">
+
 </head>
 <body>
     <div class="back"><a href="../index.html">←</a></div>
@@ -70,11 +84,19 @@
     </div>
 
     <script src="https://d3js.org/d3.v6.min.js"></script>
-    <script src="../js/update.js"></script>
-    <script src="../js/data.js"></script>
-    <script src="../js/phases.js"></script>
-    <script src="../js/main.js"></script>
-    <script src="../js/slider_dots.js"></script>
+    <script src="../js/update.js" type="module"></script>
+    <script src="../js/data.js" type="module"></script>
+    <script src="../js/phases.js" type="module"></script>
+    <script src="../js/main.js" type="module"></script>
+    <script src="../js/slider_dots.js" type="module"></script>
+
+
+    <!-- geoJSON -->
+    <script src="https://unpkg.com/topojson@3"></script>
+    <script src="https://d3js.org/topojson.v2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+
+    
    
 </body>
 </html>

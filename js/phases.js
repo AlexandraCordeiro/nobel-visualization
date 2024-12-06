@@ -1,5 +1,5 @@
 let raio=280;
-svg= d3.select("svg");
+let svg = d3.select("svg");
 
 let knownName = document.getElementById("knownName");
 let category = document.getElementById("category");
@@ -28,38 +28,34 @@ let title = document.querySelector("#title");
 let other_text = document.querySelector("#other_text");
 let body = document.querySelector("body");
 let section = document.querySelector("section");
-let maxPhase=10;
+let maxPhase=19;
 
-//estado inicial - imagem moeda
-/*function phase0() {
-    other_text.style.opacity = "1";
-    title.style.opacity = "1";
-    section.style.display = "none";
 
-    svg.selectAll("text").remove()
-    // Dados do círculo
-    data = [{ id: 0, x: xScale(5), y: yScale(5), r: raio, color: yellow, imagePath: "../../src/moeda.png" }];
+import define from "./index.js";
+import map from "./map.js";
+import wordCloud from "./words.js"
+import {Runtime, Inspector} from "./runtime.js";
 
-    // Remove qualquer imagem já existente
-    svg.selectAll("clipPath").remove();
-    svg.selectAll("image").remove();
+//import { initializeScales, adjustScales } from "./update.js";
+//import { initializeScales} from "./update.js";
 
-    // Adiciona a imagem centralizada no círculo
-    svg.append("image")
-        .attr("xlink:href", data[0].imagePath) // Caminho da imagem
-        .attr("x", data[0].x - data[0].r) // Centraliza horizontalmente
-        .attr("y", data[0].y - data[0].r ) // Centraliza verticalmente
-        .attr("width", 2*data[0].r) // Define a largura igual ao diâmetro do círculo
-        .attr("height", 2*data[0].r); // Define a altura igual ao diâmetro do círculo
-    update();
-}*/
+import {update} from "./update.js";
+
+let data = [];
+const width = window.innerWidth;
+const height = window.innerHeight;
+let xScale, yScale, originalWidth, originalHeight;
+xScale = d3.scaleLinear().domain([0, 10]).range([0, width]);
+yScale = d3.scaleLinear().domain([0, 10]).range([0, height]);
+originalWidth = width;
+originalHeight = height;
+
 
 //estado inicial - moeda com número
-function phase1() {
-    label.innerHTML = ""; // Limpa conteúdo existente\
-    knownName.innerText = " ";
-    category.innerText = " ";
-    extra_info.innerText = " ";
+function phase1() { 
+    
+    
+    clean();
     section.style.display = "flex";
     // Remover qualquer imagem existente para evitar duplicação
     svg.selectAll("image").remove();
@@ -810,11 +806,8 @@ function phase7(){
 
 //Marie Curie
 function phase8(){
-    
-    label.innerHTML = ""; // Limpa conteúdo existente
-    knownName.innerText = " ";
-    category.innerText = " ";
-    extra_info.innerText = " ";
+    initializeScales();
+    clean();
     
     knownName.innerText = "Marie Curie";
     category.innerHTML = "Physics (1903) <br> Chemistry (1911)";
@@ -879,11 +872,8 @@ function phase8(){
 //Egas Moniz
 ///REVER ISTO
 function phase9(){
-    svg.selectAll("text").remove()
-    label.innerHTML = ""; // Limpa conteúdo existente
-    knownName.innerText = " ";
-    category.innerText = " ";
-    extra_info.innerText = " ";
+    initializeScales();
+    clean();
 
     knownName.innerText = "Egas Moniz";
     category.innerHTML = "Medicina ()";
@@ -945,22 +935,70 @@ function phase9(){
 }
 
 function phase10(){
-
     console.log("FASE 10");
-    //remove o pattern ao avançar para a phase6();
-    svg.selectAll("pattern").remove()
-    svg.selectAll("image").remove();
-    section.style.display = "flex";
-    knownName.innerText = " ";
-    category.innerText = " ";
-    extra_info.innerText = " ";
+    clean();
 }
 
-function initializePhases() {
+function phase11(){
+    clean();
+}
+
+function phase12(){
+    clean();
+}
+
+//Birth country of the laureates
+function phase13(){
+    console.log("fase 13");
+    clean();
+    map()
+
+}
+
+//Death country of the laureates
+function phase14(){
+    clean();
+}
+
+//Affiliation universities of the laureates
+function phase15(){
+    clean();
+}
+
+//Monetary value of the nobel prize compared to the first year (1901)
+function phase16(){
+    clean();
+}
+
+//Impact of global economic crises on the value attributed to laureates
+function phase17(){
+    clean();
+    const runtime = new Runtime();
+    const main = runtime.module(define, Inspector.into(document.body));
+}
+
+//Most frequent words in the prize description
+function phase18(){
+    clean();
+    //wordCloud("../dataset/pronouns_word_cloud.csv");
+}
+
+//The End
+function phase19(){
+    clean();
+    
+}
+
+
+
+export function initializePhases() {
     runPhase(1);
 }
 
+export default initializePhases;
+
 function runPhase(phase) {
+    //adjustScales();
     //if (phase === 0) phase0();
     if (phase === 1) phase1();
     if (phase === 2) phase2();
@@ -972,6 +1010,15 @@ function runPhase(phase) {
     if (phase === 8) phase8();
     if (phase === 9) phase9();
     if (phase === 10) phase10();
+    if (phase === 11) phase11();
+    if (phase === 12) phase12();
+    if (phase === 13) phase13();
+    if (phase === 14) phase14();
+    if (phase === 15) phase15();
+    if (phase === 16) phase16();
+    if (phase === 17) phase17();
+    if (phase === 18) phase18();
+    if (phase === 19) phase19();
 
 }
 
@@ -1007,4 +1054,15 @@ async function fetchWikidataImage(wikidataId) {
     console.error("Erro ao buscar a imagem:", error);
     return null;
   }
+}
+
+
+function clean(){
+    //remove o pattern ao avançar para a phase6();
+    svg.selectAll("pattern").remove()
+    svg.selectAll("image").remove();
+    section.style.display = "flex";
+    knownName.innerText = " ";
+    category.innerText = " ";
+    extra_info.innerText = " ";
 }

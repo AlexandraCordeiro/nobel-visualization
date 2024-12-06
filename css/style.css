@@ -1,0 +1,27 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  
+  svg {
+    width: 100%;
+    border: none;
+    margin-top: -17vw;
+  }
+  
+
+  .country {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 0.05rem;
+  }
+
+
+  #chartdiv {
+    margin:auto;
+    width: 100%;
+    height: 80vh;
+  }
