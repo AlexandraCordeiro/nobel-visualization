@@ -34,10 +34,13 @@
   }
 
   #map {
-    width: 100%;
+    width: 95%;
     border: none;
     position: absolute;
-    top: -15vw;
+    top: 40%;
+    transform: translateY(-50%);
+    left:5%;
+    /*transform: translateY(-50%,-50%);*/
   }
    
    #my-dataviz{
@@ -141,6 +144,8 @@
      #knownName{
         font-size:4rem;
         text-align:right;
+        line-height: 3.5rem;
+        margin-bottom:30px;
      }
 
      #category{

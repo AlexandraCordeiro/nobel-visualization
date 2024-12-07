@@ -169,7 +169,7 @@ function phase1() {
         .attr("y", height / 2)  // Posição Y centralizada
         .attr("text-anchor", "middle")  // Alinha o texto no centro
         .attr("dominant-baseline", "middle")  // Centraliza verticalmente
-        .attr("font-size", "100px")  // Tamanho da fonte
+        .attr("font-size", "90px")  // Tamanho da fonte
         .attr("fill", "#000000")  // Cor do texto
         .text("1012");
 }
