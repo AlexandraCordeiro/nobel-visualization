@@ -31,7 +31,7 @@ body{
     white-space: pre;
     background-color: var(--backColor);
     border: 2px solid var(--green2);
-    padding: 10px;
+    padding: 10px 15px;
     border-radius:10px;
     z-index: 100;
 }
