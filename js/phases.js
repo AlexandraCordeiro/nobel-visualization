@@ -42,14 +42,180 @@ function parseText(text) {
   return text.replace(/[\s\(\)\-\.,]/g, '');
 }
 
-function mouseOver(e, d) {
+function textSize(text) {
+    if (!d3) return;
+    var container = d3.select('body').append('svg');
+    container.append('text').attr('x',  -99999).attr('y',  -99999).text(text);
+    var size = container.node().getBBox();
+    container.remove();
+    let vw = 100 * size.width / window.innerWidth
+    console.log(vw)
+    return vw;
+}
+
+
+function wordCloud() {
+    let margin = 30;
+    let width = window.innerWidth - margin;
+    let height = width / 1.5;
+
+    let imgWidth = 20;
+    let imgHeight = imgWidth;
+
+    let y = 50 - (imgWidth)
+    let gap = imgWidth + 2
+    let x = (100 - (4 * imgWidth) - (2 * 3)) / 2
+
+    let imgs = [{'src': '../src/all.svg'},
+                {'src': '../src/pronouns.svg'},
+                {'src': '../src/verbs.svg'},
+                {'src': '../src/adj.svg'}
+    ]
+
+    let text = [{'text': 'All'},
+        {'text': 'Pronouns'},
+        {'text': 'Verbs'},
+        {'text': 'Adjectives'}
+    ]
+
+    let svg = d3.select('body').append('svg').attr('width', width).attr('height', height).attr('id', "wordCloud")
+
+    let g = svg.append('g')
+
+    g.selectAll('image')
+        .data(imgs)
+        .enter()
+        .append('image')
+        .attr('class', 'words')
+        .attr('width', `${imgWidth}vw`)
+        .attr('height', `${imgHeight}vw`)
+        .attr('x',  (d, i) => `${x + i * gap}vw` ) 
+        .attr('y', `${y}vh`)  
+        .attr('href', d => d.src);
+    
+    g.selectAll('text')
+        .data(text)
+        .enter()
+        .append('text')
+        .attr('class', 'wordCloudText')
+        .attr('width', `${imgWidth}vw`)
+        .attr('x',  (d, i) => `${(x + (imgWidth / 2) + (i * gap) - (textSize(d.text) / 2))}vw` ) 
+        .attr('y', `${y - 5}vh`)
+        .text(d => d.text)
+        .attr('font-size', 'large')
+        .attr('font-weight', '500')
+}
+
+function topUniversities() {
+    // Parse the Data
+    d3.csv("../dataset/laureates_data.csv").then(data => {
+        // Set the dimensions and margins of the graph
+        let width = window.innerWidth * 0.7; // Adjust for better display
+        let height = window.innerHeight * 0.7; // Adjust for better display
+
+        let margin = { top: 10, right: 30, bottom: 40, left: 200 };
+        let innerWidth = width - margin.left - margin.right;
+        let innerHeight = height - margin.top - margin.bottom;
+
+        // Append the svg object to the body of the page
+        let svg = d3.select('body')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height)
+            .attr('id', "lollipop");
+
+        let chartArea = svg.append("g")
+            .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+        // Filter and group data by 'affiliations'
+        let filteredData = data.filter(d => d.affiliations); // Ensure non-empty affiliations
+        let groupedData = d3.groups(filteredData, d => d.affiliations);
+        let sortedData = d3.sort(groupedData, d => -d[1].length);
+
+        // Select only the top 10 affiliations
+        let top10Data = sortedData.slice(0, 10);
+
+        // Add X axis
+        let maxCount = d3.max(top10Data, d => d[1].length);
+        let axisPadding = 0.85; // Scale down the X-axis by 85%
+        let x = d3.scaleLinear()
+            .domain([0, maxCount])
+            .range([0, innerWidth * axisPadding]); // Apply padding to range
+
+        chartArea.append("g")
+            .attr("transform", `translate(0, ${innerHeight})`)
+            .call(d3.axisBottom(x))
+            .selectAll("text")
+            .attr("transform", "translate(-10,0)rotate(-45)")
+            .style("text-anchor", "end")
+            .style("font-family", "var(--jost)") // Change font to var(--jost)
+            .style("font-size", "14px"); // Change font size for X-axis ticks
+
+        // Add Y axis
+        let y = d3.scaleBand()
+            .domain(top10Data.map(d => d[0])) // Use the group key as the domain
+            .range([0, innerHeight])
+            .padding(1);
+
+        chartArea.append("g")
+            .call(d3.axisLeft(y))
+            .selectAll("text")
+            .style("font-family", "var(--jost)") // Change font to var(--jost)
+            .style("font-size", "14px"); // Change font size for Y-axis ticks
+
+        // Add lines
+        chartArea.selectAll("lines")
+            .data(top10Data)
+            .enter()
+            .append("line")
+            .attr("x1", d => x(d[1].length))
+            .attr("x2", x(0))
+            .attr("y1", d => y(d[0]))
+            .attr("y2", d => y(d[0]))
+            .attr("stroke", "black")
+            .attr("stroke-width", 1);
+
+        // Add circles
+        chartArea.selectAll("circle")
+            .data(top10Data)
+            .enter()
+            .append("circle")
+            .attr("cx", d => x(d[1].length))
+            .attr("cy", d => y(d[0]))
+            .attr("r", innerWidth * 0.01)
+            .style("fill", "var(--yellow)");
+    });
+}
+
+
+
+
+
+
+function mouseOver(e, d, birth) {
   let id = parseText(d[0])
+  let laureate, verb, sentence
+  if (d[1].length > 1) {
+    laureate = 'laureates'
+    verb = 'originate'
+  }
+  else {
+    laureate = 'laureate'
+    verb = 'originates'
+  }
+
+  if (birth) {
+    sentence = `${d[1].length} ${laureate} ${verb} from ${d[0]}`
+  }
+  else {
+    sentence = `${d[1].length} ${laureate} passed away in ${d[0]}`
+  }
   d3.select(`.${id}`).attr('opacity', 0.5).attr('r', radiusScale(d[1].length) * 2)
-  d3.select('#tooltip').transition().duration(200).style('opacity', 1).text(`${d[0]}`)
+  d3.select('#tooltip').transition().duration(200).style('opacity', 1).text(sentence)
 }
 
 function mouseMove(e, d) {
-  d3.select('#tooltip').style('left', (e.pageX+10) + 'px').style('top', (e.pageY+10) + 'px')
+  d3.select('#tooltip').style('left', (e.pageX+10) + 'px').style('top', (e.pageY-10) + 'px')
 }
 
 function mouseOut(e, d) {
@@ -58,7 +224,7 @@ function mouseOut(e, d) {
   d3.select('#tooltip').style('opacity', 0)
 }
 
-function map() {
+function map(birth) {
   let margin = 30;
   let width = window.innerWidth - margin;
   let height = width / 1.5;
@@ -92,32 +258,47 @@ function map() {
       .attr('style', 'position: absolute; opacity: 0;')
 
     d3.csv('../dataset/laureates_data.csv').then(data => {
-      data = d3.sort(data, d => -d.birth_country_count)
-      let filterData = d3.groups(data.filter(d => d.birth_country_latitude && d.birth_country_longitude), (d) => d.birth_countryNow);
-      var bubbles = svg.append("g");
-      radiusScale = d3.scaleLog()
-        .domain([1, d3.max(filterData, d => d[1].length)])
-        .range([4, 20]);
+        data = d3.sort(data, d => -d.birth_country_count)
+        let filterDataDeath = d3.groups(data.filter(d => d.death_country_latitude && d.death_country_longitude), (d) => d.death_countryNow);
+        let filterDataBirth = d3.groups(data.filter(d => d.birth_country_latitude && d.birth_country_longitude), (d) => d.birth_countryNow);
+        var bubbles = svg.append("g");
+        radiusScale = d3.scaleLog()
+            .domain([1, d3.max(filterDataBirth, d => d[1].length)])
+            .range([4, 20]);
 
-      bubbles.attr('class', 'bubbles');
-      bubbles.selectAll('circle')
-      .data(filterData)
-      .enter()
-        .append('circle')
-          .attr('cx', d => projection([+d[1][0].birth_country_longitude, +d[1][0].birth_country_latitude])[0])
-          .attr('cy', d => projection([+d[1][0].birth_country_longitude, +d[1][0].birth_country_latitude])[1])
-          .attr('fill', 'var(--yellow)')
-          .attr('stroke', 'white')
-          .attr('r', d => radiusScale(d[1].length))
-          .attr('opacity', 1)
-          .attr('id', d => parseText(String(d[0])))
-          .attr('class', d => parseText(String(d[0])))
-          .attr('x', d => projection([+d[1][0].birth_country_longitude, +d[1][0].birth_country_latitude])[0])
-          .attr('y', d => projection([+d[1][0].birth_country_longitude, +d[1][0].birth_country_latitude])[1])
-          .on('mouseover', (d, e) => mouseOver(d, e))
-          .on('mouseout', (d, e) => mouseOut(d, e))
-          .on('mousemove', (d, e) => mouseMove(d, e))
-  })
+        let dataset
+        if (birth) {
+            dataset = filterDataBirth
+        }
+        else {
+            dataset = filterDataDeath
+        }
+
+        bubbles.attr('class', 'bubbles');
+        bubbles.selectAll('circle')
+        .data(dataset)
+        .enter()
+            .append('circle')
+            .attr('cx', d => 
+                    birth
+                    ? projection([+d[1][0].birth_country_longitude, +d[1][0].birth_country_latitude])[0]
+                    : projection([+d[1][0].death_country_longitude, +d[1][0].death_country_latitude])[0] 
+            )
+            .attr('cy', d => 
+                    birth
+                    ? projection([+d[1][0].birth_country_longitude, +d[1][0].birth_country_latitude])[1] 
+                    : projection([+d[1][0].death_country_longitude, +d[1][0].death_country_latitude])[1] 
+            )
+            .attr('fill', 'var(--yellow)')
+            .attr('stroke', 'white')
+            .attr('r', d => radiusScale(d[1].length))
+            .attr('opacity', 1)
+            .attr('id', d => parseText(String(d[0])))
+            .attr('class', d => parseText(String(d[0])))
+            .on('mouseover', (d, e) => mouseOver(d, e, birth))
+            .on('mouseout', (d, e) => mouseOut(d, e))
+            .on('mousemove', (d, e) => mouseMove(d, e))
+    })
 
   function resize() {
     width = window.innerWidth - margin;
@@ -132,6 +313,10 @@ function map() {
     svg.selectAll('circle')
       .attr('cx', d => projection([+d[1][0].birth_country_longitude, +d[1][0].birth_country_latitude])[0])
       .attr('cy', d => projection([+d[1][0].birth_country_longitude, +d[1][0].birth_country_latitude])[1])
+    
+    svg.selectAll('circle')
+    .attr('cx', d => projection([+d[1][0].death_country_longitude, +d[1][0].death_country_latitude])[0])
+    .attr('cy', d => projection([+d[1][0].death_country_longitude, +d[1][0].death_country_latitude])[1])
   }
 
   window.addEventListener('resize', resize);
@@ -1345,20 +1530,27 @@ function phase12() {
 
 function phase13(){
     console.log("FASE 13");
-    map();
+    // birth? true
+    map(true);
 }
 
 function phase14(){
     console.log("FASE 14");
+    d3.selectAll("#lollipop").remove();
+    // birth? false
+    map(false);
 }
 
 function phase15(){
     d3.selectAll(".observablehq").remove();
     console.log("FASE 15");
+    topUniversities();
 }
 
 function phase16(){
     console.log("FASE 16");
+    d3.selectAll("#wordCloud").remove();
+    d3.selectAll("#lollipop").remove();
     const runtime = new Runtime();
     const main = runtime.module(define, Inspector.into(document.body));
 }
@@ -1366,12 +1558,14 @@ function phase16(){
 function phase17(){
     console.log("FASE 17");
     clean();
+    wordCloud()
 }
 
 //THE END
 function phase18() {
     console.log("FASE 18");
     clean();
+    d3.selectAll("#wordCloud").remove();
     d3.selectAll("#circle_solo").remove();
 
     svg.selectAll("foreignObject") // Substituímos text por foreignObject

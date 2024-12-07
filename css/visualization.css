@@ -33,6 +33,24 @@
     height: 80vh;
   }
 
+  #wordCloud {
+    position: absolute;
+    top: 0;
+    margin: auto;
+  }
+
+  #wordCloudText {
+    font-family: var(--Jost);
+    text-align: center;
+    text-justify: center;
+  }
+
+  #wordCloud g {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
   #map {
     width: 95%;
     border: none;
@@ -163,7 +181,14 @@
      }
 
 
-
+     #lollipop {
+      position: absolute;
+      top: 15vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      left: 20vw;
+     }
 
      #label{
         position:fixed;
@@ -171,7 +196,7 @@
         right:0;
         displaY:flex;
         flex-direction: column;
-        width:10%;
+        Width:13%;
         gap:5px;
         padding:20px;
         justify-content: center;
