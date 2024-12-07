@@ -41,9 +41,14 @@
 }
 
 .observablehq svg{
-    height: 110vh;
+    height: 100vh;
+    width:98%;
     position: absolute;
-    top: -5vw;
+    left: 2%;
+    top: 50%;
+    transform:translateY(-50%);
+    scale:0.95;
+
 }
 .observablehq--collapsed,
 .observablehq--expanded,

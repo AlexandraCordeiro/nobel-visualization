@@ -330,6 +330,7 @@ function getLaureatesById(targetId) {
 //estado inicial - moeda com número
 function phase1() {
     clean();
+    d3.selectAll("#tooltip").remove()
     section.style.display = "flex";
     // Remover qualquer imagem existente para evitar duplicação
     svg.selectAll("image").remove();
@@ -1530,6 +1531,8 @@ function phase12() {
 
 function phase13(){
     console.log("FASE 13");
+    d3.selectAll("#bubble-chart").selectAll("circle").remove();
+    clean();
     // birth? true
     map(true);
 }
@@ -1537,33 +1540,41 @@ function phase13(){
 function phase14(){
     console.log("FASE 14");
     d3.selectAll("#lollipop").remove();
+    d3.selectAll("#bubble-chart").selectAll("circle").remove();
+    clean();
     // birth? false
     map(false);
 }
 
 function phase15(){
     d3.selectAll(".observablehq").remove();
+    d3.selectAll("#bubble-chart").selectAll("circle").remove();
     console.log("FASE 15");
+    clean();
     topUniversities();
 }
 
 function phase16(){
     console.log("FASE 16");
-    d3.selectAll("#wordCloud").remove();
-    d3.selectAll("#lollipop").remove();
+    d3.selectAll("#bubble-chart").selectAll("circle").remove();
+    /*d3.selectAll("#wordCloud").remove();
+    d3.selectAll("#lollipop").remove();*/
+    clean();
     const runtime = new Runtime();
     const main = runtime.module(define, Inspector.into(document.body));
 }
 
 function phase17(){
     console.log("FASE 17");
+    d3.selectAll("#bubble-chart").selectAll("circle").remove();
     clean();
-    wordCloud()
+    wordCloud();
 }
 
 //THE END
 function phase18() {
     console.log("FASE 18");
+    d3.selectAll("#bubble-chart").selectAll("circle").remove();
     clean();
     d3.selectAll("#wordCloud").remove();
     d3.selectAll("#circle_solo").remove();
@@ -1673,7 +1684,7 @@ function clean(){
     svg.selectAll("text").remove()
     svg.selectAll("pattern").remove()
     svg.selectAll("image").remove();
-    //d3.select('body').selectAll("#tooltip").remove()
+    d3.selectAll("#tooltip").remove()
     d3.selectAll("#circle_solo").remove();
     d3.selectAll("#map").remove();
     d3.selectAll("defs").remove();
@@ -1683,6 +1694,11 @@ function clean(){
     category.innerText = " ";
     extra_info.innerText = " ";
     label.innerHTML = ""; 
+
+
+    d3.selectAll("#wordCloud").remove();
+    d3.selectAll("#lollipop").remove();
+    d3.selectAll(".observablehq").remove();
    
 }
 

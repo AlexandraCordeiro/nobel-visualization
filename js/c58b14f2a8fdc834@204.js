@@ -106,6 +106,7 @@ async function _3(d3, chartwidth, margin, chartheight, x, beeswarm, data, r) {
   let chartExplanation = svg.append('g')
     .attr('id', 'chart-explanation')
 
+    
   chartExplanation.attr("transform", `translate(${10}, ${margin.top})`);
   let minValue = d3.min(data, d => +d.prizeValue)
   let maxValue = d3.max(data, d => +d.prizeValue)
@@ -141,7 +142,7 @@ async function _3(d3, chartwidth, margin, chartheight, x, beeswarm, data, r) {
   .join('text')
   .attr('class', 'value-text')
   .attr('x', d => d.textPos)
-  .attr('y', labelsHeight + r(maxValue) )
+  .attr('y', labelsHeight + r(maxValue)/2 )
   .attr('text-anchor', 'middle')
   .text(d => d.value);
 
