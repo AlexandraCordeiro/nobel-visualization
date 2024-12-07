@@ -2,7 +2,7 @@ let lis = document.querySelectorAll('li');
 let activePhase = 1; // Variável para rastrear a fase ativa
 let maxPhase = lis.length;
 
-// Inicializa o primeiro <span> como visível
+// Inicializa a primeira fase como visível
 function initialize() {
   let firstLi = lis[0];
   if (firstLi) {
@@ -15,7 +15,7 @@ function initialize() {
   }
 }
 
-// Atualiza a exibição com base no item ativo
+// Atualiza a barra lateral com base na fase ativa
 function updateActiveItem(index) {
   lis.forEach(function(li) {
     li.classList.remove('active');
@@ -41,14 +41,14 @@ function updateActiveItem(index) {
   }
 }
 
-// Configura os eventos de clique nos itens <li>
+// Se clicar no li
 lis.forEach(function(item, index) {
   item.addEventListener('click', function() {
     updateActiveItem(index);
   });
 });
 
-// Função para mudar a fase ativa usando as setas
+// Função para mudar a fase ativa de acordo com as setas
 function changeActive(direction) {
   let activeLi = document.querySelector('li.active');
   if (!activeLi) return;
@@ -64,7 +64,7 @@ function changeActive(direction) {
   updateActiveItem(index);
 }
 
-// Detecta o pressionamento das teclas de seta
+// Detecta se as setas foram pressionadas
 document.addEventListener('keydown', function(event) {
   if (event.key === 'ArrowRight') {
     changeActive('next');
