@@ -1,0 +1,88 @@
+<!-- colocar o dataset associado para ver, para cada bolinha (1024) o nome do laureado e o premio que recebeu (on hovered)-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="shortcut icon" type="img/png" href="../src/moeda.png">
+    <title>Nobel Prizes Visualization</title>
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/visualization.css">
+    <link rel="stylesheet" href="../css/geral.css">
+
+    <!--roboto e Jost-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+    <!-- geoJSON -->
+    <script src="https://unpkg.com/topojson@3"></script>
+    <script src="https://d3js.org/topojson.v2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+
+    <!-- beeswarm chart -->
+    <link rel="stylesheet" type="text/css" href="../css/inspector.css">
+
+</head>
+<body>
+    <div class="back"><a href="../index.html">←</a></div>
+    <!--Baseado em https://codepen.io/slcr/pen/QKBgoX-->
+    <section>
+        <ul class="dots">
+            <li data-phase="1" class="active"><span>Total number of laureates</span></li>
+            <li data-phase="2"><span>Laureates</span></li>
+            <li data-phase="3"><span>Laureates by gender/entity</span></li>
+            <li data-phase="4"><span>Laureates by gender/entity separated into groups</span></li>
+            <li data-phase="5"><span>Laureates by category</span></li>
+            <li data-phase="6"><span>Laureates by category and gender/entity</span></li>
+            <li data-phase="7"><span>Laureates by category and gender/entity separated into groups</span></li>
+            <li data-phase="8"><span>First winner of two Nobel Prizes</span></li>
+            <li data-phase="9"><span>Portugal in the Nobels – Medicine</span></li>
+            <li data-phase="10"><span>Portugal in the Nobels – Literature</span></li>
+            <li data-phase="11"><span>It's never too...</span></li>
+            <li data-phase="12"><span>Laureates that have declined a Nobel Prize</span></li>
+            <li data-phase="13"><span>Birth country of the laureates</span></li>
+            <li data-phase="14"><span>Death country of the laureates</span></li>
+            <li data-phase="15"><span>Universities with the most Nobel laureates</span></li>
+            <li data-phase="16"><span>Monetary value of the nobel prize compared to the first year (1901)</span></li> 
+            <li data-phase="17"><span>Most frequent words in the prize description</span></li>  
+            <li data-phase="18"><span>The End</span></li>  
+        </ul>
+    </section>
+
+    <div id="info_extra">
+      <div id="knownName"></div>
+      <div id="category"></div>
+      <div id="add_info"></div>
+    </div>
+
+    <div id="my_dataviz">
+        <svg id="bubble-chart"></svg>
+    </div>
+
+    <div id="label">
+      <!--<div>
+        <div id="color1"></div>
+        <p>Organization</p>
+      </div>
+      <div>
+        <div id="color2"></div>
+        <p>Female</p>
+      </div>
+      <div>
+        <div id="color3"></div>
+        <p>Male</p>
+      </div>-->
+    </div>
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="../js/update.js"></script>
+    <script src="../js/data.js"></script>
+    <script src="../js/phases.js" type="module"></script>
+    <script src="../js/slider_dots.js"></script>
+    <script src="../js/main.js"></script>
+   
+</body>
+</html>

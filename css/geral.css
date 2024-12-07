@@ -1,0 +1,37 @@
+*{
+    margin:0;
+
+    --jost: "Jost", sans-serif;
+    --roboto: "Roboto", serif;
+
+    /*Colors*/
+    --preto: #1A1510;
+    --backColor: #F7F1E5;
+    --yellow: #FFC100;/*organizations*/
+    --terra:#B05E27; /*female*/
+    --green1: #898121; /*male*/
+    --green2: #4C4B16;
+
+    /*categorias*/ 
+    --c1: #460002;
+    --c2: #860A0A;
+    --c3 : #DE783A;
+    --c4 : #C3A768;
+    --c5 : #5F6B53;
+    --c6 : #15616E;
+}
+
+body{
+    overflow: hidden; /*bloqueia o scroll*/
+    background-color: var(--backColor);
+    font-family: var(--jost);
+}
+
+#tooltip{
+    white-space: pre;
+    background-color: var(--backColor);
+    border: 2px solid var(--green2);
+    padding: 10px 15px;
+    border-radius:10px;
+    z-index: 100;
+}
