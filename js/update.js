@@ -24,7 +24,7 @@ function update() {
   .attr('id', 'tooltip')
   .attr('style', 'position: absolute; opacity: 0;')
 
-    const mOver = (e, d) => {
+    /*const mOver = (e, d) => {
         // e is the mouseEvent
         // d is the data
         //console.log(d);
@@ -39,12 +39,43 @@ function update() {
                 .text(`${d.name}\n${d.prizeCategory}\n${d.awardYear}`);
             d3.select(e.currentTarget).style("stroke", "black");
         }
+    };*/
+
+    const mOver = (e, d) => {
+        let tooltip = d3.select('#tooltip');
+        if (tooltip.empty()) { //este código cria a tooltip se ainda não existir quando o mousemove
+            tooltip = d3.select('body')
+                .append('div')
+                .attr('id', 'tooltip')
+                .style('position', 'absolute')
+                .style('white-space', 'pre')
+                .style('background-color', 'var(--backColor)')
+                .style('border', '2px solid var(--green2)')
+                .style('padding', '10px 15px')
+                .style('border-radius', '10px')
+                .style('z-index', '100')
+                .style('pointer-events', 'none')
+                .style('opacity', 0);
+        }
+
+    
+        if (`${d.name}` === "undefined" && `${d.prizeCategory}` === "undefined") {
+            tooltip.text("");
+        } else {
+            tooltip
+                .transition()
+                .duration(200)
+                .style('opacity', 1)
+                .text(`${d.name}\n${d.prizeCategory}\n${d.awardYear}`);
+            d3.select(e.currentTarget).style("stroke", "black");
+        }
     };
     
 
     const mOut = function(){
         d3.select(this).style("stroke", "none");
-        d3.select('#tooltip').style('opacity', 0).text(" ");
+        //d3.select('#tooltip').style('opacity', 0).text(" ");
+        d3.select('#tooltip').remove();
     }
     
 

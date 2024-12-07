@@ -11,7 +11,7 @@ window.onload = function () {
     initializePhases();
 
     window.addEventListener("resize", resize);
-    document.addEventListener("keydown", handleKeyEvents);
+    //document.addEventListener("keydown", handleKeyEvents);
 
     loadDataset(() => {
         runPhase(1);
@@ -23,7 +23,7 @@ function resize() {
     update();
 }
 
-function handleKeyEvents(event) {
+/*function handleKeyEvents(event) {
     if (event.key === "ArrowRight") nextPhase();
     if (event.key === "ArrowLeft") previousPhase();
 }
@@ -38,4 +38,4 @@ function previousPhase() {
     phase--;
     if (phase < 1) phase = maxPhase;
     runPhase(phase);
-}
+}*/

@@ -157,6 +157,9 @@ function phase1() {
 
     // Adiciona um texto centralizado no SVG
 
+    svg.selectAll("circle")
+        .attr("id", "circle_solo")
+    
     // Remover texto anterior (se houver)
     svg.selectAll("text").remove();
 
@@ -169,12 +172,6 @@ function phase1() {
         .attr("font-size", "100px")  // Tamanho da fonte
         .attr("fill", "#000000")  // Cor do texto
         .text("1012");
-
-
-    //other_text.style.opacity = "0";
-    //title.style.opacity = "0";
-    /*body.removeChild(other_text);
-    body.removeChild(title);*/
 }
 
 //1012 bolas
@@ -862,15 +859,15 @@ function phase8(){
         category.innerHTML=laureatesWithId[0].prizeCategory + "(" + laureatesWithId[0].awardYear + ")<br>" + laureatesWithId[1].prizeCategory + "(" + laureatesWithId[1].awardYear + ")";
         url = laureatesWithId[0].wikidata;
 
-        (async () => {
+       /*(async () => {
           try {
               const wikidataId = getWikidataId(url); // Obtém o ID da Wikidata a partir da URL
               console.log(wikidataId);
               if (wikidataId) {
                  
-                 const backgroundImageURL = await fetchWikidataImage(wikidataId); // Aguarda o resultado da Promise
-      
-                  // Define um padrão para a imagem
+                 //const backgroundImageURL = await fetchWikidataImage(wikidataId); // Aguarda o resultado da Promise
+                 const backgroundImageURL = "../src/marie_curie.png";
+                  
                   const defs = svg.append("defs");
                   defs.append("pattern")
                       .attr("id", "circle-bg") // ID único do padrão
@@ -888,7 +885,21 @@ function phase8(){
           } catch (error) {
               console.error("Erro ao buscar a imagem da Wikidata:", error);
           }
-      })();
+      })();*/
+      
+      const backgroundImageURL = "../src/marie_curie.png";
+                  
+      const defs = svg.append("defs");
+      defs.append("pattern")
+          .attr("id", "circle-bg") // ID único do padrão
+          .attr("width", 1)
+          .attr("height", 1)
+          .append("image")
+          .attr("xlink:href", backgroundImageURL)
+          .attr("preserveAspectRatio", "xMidYMid slice") // Ajusta a proporção
+          .attr("width", raio*2) // Ajuste para o tamanho correto da imagem
+          .attr("height", raio*2); // Ajuste para o tamanho correto da imagem
+      
       svg.selectAll("circle")
             .remove();
             
@@ -933,14 +944,13 @@ function phase9(){
 
         url = laureatesWithId[0].wikidata;
 
-        (async () => {
+        /*(async () => {
           try {
               const wikidataId = getWikidataId(url); // Obtém o ID da Wikidata a partir da URL
               console.log(wikidataId);
               if (wikidataId) {
                  
-                 const backgroundImageURL = await fetchWikidataImage(wikidataId); // Aguarda o resultado da Promise
-      
+                 //const backgroundImageURL = await fetchWikidataImage(wikidataId); // Aguarda o resultado da Promise
                   // Define um padrão para a imagem
                   const defs = svg.append("defs");
                   defs.append("pattern")
@@ -959,7 +969,22 @@ function phase9(){
           } catch (error) {
               console.error("Erro ao buscar a imagem da Wikidata:", error);
           }
-      })();
+      })();*/
+
+      //const backgroundImageURL = await fetchWikidataImage(wikidataId); // Aguarda o resultado da Promise
+      const backgroundImageURL = "../src/Egas_Moniz.png";
+      // Define um padrão para a imagem
+      const defs = svg.append("defs");
+      defs.append("pattern")
+          .attr("id", "circle-bg") // ID único do padrão
+          .attr("width", 1)
+          .attr("height", 1)
+          .append("image")
+          .attr("xlink:href", backgroundImageURL)
+          .attr("preserveAspectRatio", "xMidYMid slice") // Ajusta a proporção
+          .attr("width", raio*2) // Ajuste para o tamanho correto da imagem
+          .attr("height", raio*2); // Ajuste para o tamanho correto da imagem
+
       svg.selectAll("circle")
             .remove();
             
@@ -1002,14 +1027,14 @@ function phase10(){
 
         url = laureatesWithId[0].wikidata;
 
-        (async () => {
+        /*(async () => {
           try {
               const wikidataId = getWikidataId(url); // Obtém o ID da Wikidata a partir da URL
               console.log(wikidataId);
               if (wikidataId) {
                  
                  const backgroundImageURL = await fetchWikidataImage(wikidataId); // Aguarda o resultado da Promise
-      
+
                   // Define um padrão para a imagem
                   const defs = svg.append("defs");
                   defs.append("pattern")
@@ -1028,7 +1053,22 @@ function phase10(){
           } catch (error) {
               console.error("Erro ao buscar a imagem da Wikidata:", error);
           }
-      })();
+      })();*/
+
+      const backgroundImageURL = "../src/saramago.jpg";
+
+        // Define um padrão para a imagem
+        const defs = svg.append("defs");
+        defs.append("pattern")
+            .attr("id", "circle-bg") // ID único do padrão
+            .attr("width", 1)
+            .attr("height", 1)
+            .append("image")
+            .attr("xlink:href", backgroundImageURL)
+            .attr("preserveAspectRatio", "xMidYMid slice") // Ajusta a proporção
+            .attr("width", raio*2) // Ajuste para o tamanho correto da imagem
+            .attr("height", raio*2); // Ajuste para o tamanho correto da imagem
+
       svg.selectAll("circle")
             .remove();
             
@@ -1077,7 +1117,7 @@ function phase11() {
         ).join(" & ");*/
 
         // Função assíncrona para buscar e aplicar imagens da Wikidata
-        const applyWikidataImages = async () => {
+        /*const applyWikidataImages = async () => {
             const imagePromises = laureatesWithIds.map(async (laureate, index) => {
                 try {
                     const url = laureate[0].wikidata;
@@ -1098,7 +1138,28 @@ function phase11() {
             //await Promise.all(imagePromises);
         };
 
-        applyWikidataImages();
+        applyWikidataImages();*/
+
+        const imagePaths = [
+            "../src/lawrence_bragg.jpg", 
+            "../src/leonid_hurwicz.jpg" 
+        ];
+
+        // Criar padrões para as imagens
+        imagePaths.forEach((imagePath, index) => {
+            svg.append("defs")
+                .append("pattern")
+                .attr("id", `circle-bg-${index}`)
+                .attr("patternUnits", "objectBoundingBox")
+                .attr("width", 1)
+                .attr("height", 1)
+                .append("image")
+                .attr("xlink:href", imagePath)
+                .attr("width", raio2 * 2)
+                .attr("height", raio2 * 2)
+                .attr("x", 0)
+                .attr("y", 0);
+        });
 
         // Limpar círculos antigos
         svg.selectAll("circle").remove();
@@ -1176,7 +1237,7 @@ function phase12() {
         ).join(" & ");*/
 
         // Função assíncrona para buscar e aplicar imagens da Wikidata
-        const applyWikidataImages = async () => {
+        /*const applyWikidataImages = async () => {
             const imagePromises = laureatesWithIds.map(async (laureate, index) => {
                 try {
                     const url = laureate[0].wikidata;
@@ -1195,17 +1256,38 @@ function phase12() {
             });
             
             //await Promise.all(imagePromises);
-        };
+        };*/
 
-        applyWikidataImages();
+        //applyWikidataImages();
+
+        const imagePaths = [
+            "../src/jean_paul_satre.jpeg", 
+            "../src/le_duc_tho.jpg" 
+        ];
+
+        // Criar padrões para as imagens
+        imagePaths.forEach((imagePath, index) => {
+            svg.append("defs")
+                .append("pattern")
+                .attr("id", `circle-bg-${index}`)
+                .attr("patternUnits", "objectBoundingBox")
+                .attr("width", 1)
+                .attr("height", 1)
+                .append("image")
+                .attr("xlink:href", imagePath)
+                .attr("width", raio2 * 2)
+                .attr("height", raio2 * 2)
+                .attr("x", 0)
+                .attr("y", 0);
+        });
 
         // Limpar círculos antigos
         svg.selectAll("circle").remove();
         
         // Adicionar os círculos com padrões de fundo
         const data = [
-            { id: 0, x: xScale(3.5), y: yScale(5), r: raio2, color: "url(#circle-bg-0)", name: laureatesWithIds[0][0].name, prizeCategory: laureatesWithIds[0][0].prizeCategory,texto: "declined" },
-            { id: 1, x: xScale(6.5), y: yScale(5), r: raio2, color: "url(#circle-bg-1)", name: laureatesWithIds[1][0].name, prizeCategory: laureatesWithIds[1][0].prizeCategory, texto:"declined" }
+            { id: 0, x: xScale(3.5), y: yScale(5), r: raio2, color: "url(#circle-bg-0)", name: laureatesWithIds[0][0].name, prizeCategory: laureatesWithIds[0][0].prizeCategory, texto: "He always refused official distinctions and did not want to be “institutionalised”" },
+            { id: 1, x: xScale(6.5), y: yScale(5), r: raio2, color: "url(#circle-bg-1)", name: laureatesWithIds[1][0].name, prizeCategory: laureatesWithIds[1][0].prizeCategory, texto:'it was "impossible to accept the prize (...) When the Paris Agreement on Vietnam is respected (...) I will consider accepting the prize"' }
         ];
         
         svg.selectAll("circle")
@@ -1232,19 +1314,29 @@ function phase12() {
         .attr("style", "font-size: 20px; color: black; text-align: center;")
         .html(d => `<div style="font-weight: 600;">${d.name}</div><div>${d.prizeCategory}</div>`);
 
+        let w = 140;
     // Segundo foreignObject
     svg.selectAll("foreignObject.text2")
-        .data(data)
-        .enter()
-        .append("foreignObject")
-        .attr("x", d => d.x - raio)
-        .attr("y", d => d.y - raio / 2 - 100) // Ajusta a posição para não sobrepor
-        .attr("width", raio * 2) 
-        .attr("height", 100) 
-        .classed("text2", true)
-        .append("xhtml:div")
-        .attr("style", "font-size: 24px; font-weight: normal; color: black; text-align: center;")
-        .html(d => `<div style="font-size: 20px;">${d.texto}</div>`);
+    .data(data)
+    .enter()
+    .append("foreignObject")
+    .attr("x", d => d.x - raio / 2 - w / 2)
+    .attr("y", d => d.y - raio / 2 - 180) // Ajusta a posição para não sobrepor
+    .attr("width", raio + w)
+    .attr("height", 150)
+    .classed("text2", true)
+    .append("xhtml:div")
+    .attr("style", `
+        font-size: 24px; 
+        font-weight: normal; 
+        color: black; 
+        text-align: center; 
+        display: flex; 
+        align-items: flex-end; 
+        justify-content: center; 
+        height: 100%; 
+    `)
+    .html(d => `<div style="font-size: 20px;">${d.texto}</div>`);
      
     });
 
@@ -1277,21 +1369,26 @@ function phase17(){
 }
 
 //THE END
-function phase18(){
+function phase18() {
     console.log("FASE 18");
     clean();
+    d3.selectAll("#circle_solo").remove();
 
-    svg.selectAll("text")
+    svg.selectAll("foreignObject") // Substituímos text por foreignObject
         .data(data)
         .enter()
-        .append("text")
-        .attr("x", "50%") 
-        .attr("y", "50%") 
-        .attr("width", "50%") //alterar a with
-        .attr("text-anchor", "middle") 
-        .style("dominant-baseline", "middle") 
-        .style("font-size", "42px") 
-        .text("We hope you've learnt more about the Nobel Prizes! Thank you for your time");
+        .append("foreignObject")
+        .attr("x", "25%") // Ajuste para centralizar
+        .attr("y", "35%") // Ajuste para centralizar
+        .attr("width", "50%") // Largura máxima definida
+        .attr("height", 200) // Altura máxima (ajustável)
+        .append("xhtml:div")
+        .style("text-align", "center")
+        .style("font-size", "42px")
+        .style("line-height", "1.5")
+        //.style("font-weight", "bold")
+        .style("color", "black") // Defina a cor desejada
+        .html(`<p style="position:absolute, top:50%, left:50%, transform:translate(-50%,-50%)">We hope you've learnt more about the Nobel Prizes! Thank you for your time</p>`);
 }
 
 function initializePhases() {
@@ -1323,6 +1420,8 @@ function runPhase(phase) {
     if (phase === 18) phase18();
 
 }
+
+window.runPhase = runPhase;
 
 
 // URL da Wikidata
@@ -1380,7 +1479,8 @@ function clean(){
     svg.selectAll("text").remove()
     svg.selectAll("pattern").remove()
     svg.selectAll("image").remove();
-    d3.select('body').selectAll("#tooltip").remove()
+    //d3.select('body').selectAll("#tooltip").remove()
+    d3.selectAll("#circle_solo").remove();
     d3.selectAll("#map").remove();
     d3.selectAll("defs").remove();
     svg.selectAll("foreignObject").remove();
