@@ -2,7 +2,11 @@ import define from "./index.js";
 import {Runtime, Inspector} from "./runtime.js";
 
 let raio= window.innerWidth / 6;
+let minorC = 7; //circulo menor
+let ratioC = 300;
 let svg = d3.select("svg");
+
+console.log("raio:" + raio);
 
 let knownName = document.getElementById("knownName");
 let category = document.getElementById("category");
@@ -32,36 +36,11 @@ let other_text = document.querySelector("#other_text");
 let body = document.querySelector("body");
 let section = document.querySelector("section");
 let maxPhase = 18;
-
-//estado inicial - imagem moeda
-/*function phase0() {
-    other_text.style.opacity = "1";
-    title.style.opacity = "1";
-    section.style.display = "none";
-
-    svg.selectAll("text").remove()
-    // Dados do círculo
-    data = [{ id: 0, x: xScale(5), y: yScale(5), r: raio, color: yellow, imagePath: "../../src/moeda.png" }];
-
-    // Remove qualquer imagem já existente
-    svg.selectAll("clipPath").remove();
-    svg.selectAll("image").remove();
-
-    // Adiciona a imagem centralizada no círculo
-    svg.append("image")
-        .attr("xlink:href", data[0].imagePath) // Caminho da imagem
-        .attr("x", data[0].x - data[0].r) // Centraliza horizontalmente
-        .attr("y", data[0].y - data[0].r ) // Centraliza verticalmente
-        .attr("width", 2*data[0].r) // Define a largura igual ao diâmetro do círculo
-        .attr("height", 2*data[0].r); // Define a altura igual ao diâmetro do círculo
-    update();
-}*/
-let radiusScale
+let radiusScale;
 
 function parseText(text) {
   return text.replace(/[\s\(\)\-\.,]/g, '');
 }
-
 
 function mouseOver(e, d) {
   let id = parseText(d[0])
@@ -165,10 +144,7 @@ function getLaureatesById(targetId) {
 
 //estado inicial - moeda com número
 function phase1() {
-    label.innerHTML = ""; // Limpa conteúdo existente\
-    knownName.innerText = " ";
-    category.innerText = " ";
-    extra_info.innerText = " ";
+    clean();
     section.style.display = "flex";
     // Remover qualquer imagem existente para evitar duplicação
     svg.selectAll("image").remove();
@@ -204,16 +180,11 @@ function phase1() {
 //1012 bolas
 function phase2() {
     console.log("fase 3");
-    label.innerHTML = ""; // Limpa conteúdo existente
-    svg.selectAll("text").remove()
-    knownName.innerText = " ";
-    category.innerText = " ";
-    extra_info.innerText = " ";
-    label.innerHTML = ""; // Limpa conteúdo existente
+   clean();
 
     const centerX = width / 2; // Centro da grelha
     const centerY = height / 2; // Centro da grelha
-    const circleRadius = (raio * 7) / 300; //raio de cada circulo
+    const circleRadius = (raio * minorC) / ratioC; //raio de cada circulo
     console.log(circleRadius + "px")
     const gap = 1; // Espaçamento entre círculos
     const effectiveRadius = circleRadius + gap; // Raio efetivo considerando o gap
@@ -274,16 +245,11 @@ function phase2() {
 //separa por cores entidades/género 
 function phase3() {
     console.log("fase 4");
-    svg.selectAll("text").remove()
-    knownName.innerText = " ";
-    category.innerText = " ";
-    extra_info.innerText = " ";
-    label.innerHTML = ""; // Limpa conteúdo existente
+    clean();
     
-
     const centerX = width / 2; // Centro da grelha
     const centerY = height / 2; // Centro da grelha
-    const circleRadius = (raio * 7) / 300; 
+    const circleRadius = (raio * minorC) / ratioC; 
     const gap = 1; // Espaçamento entre círculos
     const effectiveRadius = circleRadius + gap; // Raio efetivo considerando o gap
 
@@ -379,7 +345,8 @@ function phase4() {
 
     const centerX = width / 2;
     const centerY = height / 2;
-    const circleRadius = 7;
+    const circleRadius = (raio * minorC) / ratioC;
+    console.log("circleRadius:" + circleRadius);
     const gap = 1;
     const effectiveRadius = circleRadius + gap;
     const val = 250;
@@ -458,7 +425,7 @@ function phase5() {
   svg.selectAll("pattern").remove()
   const centerX = width / 2; // Centro horizontal
   const centerY = height / 2; // Centro vertical
-  const circleRadius = 7; // Raio de cada círculo
+  const circleRadius = (raio * minorC) / ratioC; // Raio de cada círculo
   const gap = 1; // Espaçamento entre círculos
   const effectiveRadius = circleRadius + gap; // Raio efetivo considerando o gap
 
@@ -591,7 +558,7 @@ function phase6() {
 
     const centerX = width / 2; // Centro horizontal
     const centerY = height / 2; // Centro vertical
-    const circleRadius = 7; // Raio de cada círculo
+    const circleRadius = (raio * minorC) / ratioC; // Raio de cada círculo
     const gap = 1; // Espaçamento entre círculos
     const effectiveRadius = circleRadius + gap; // Raio efetivo considerando o gap
 
@@ -727,7 +694,7 @@ function phase7(){
 
     const centerX = width / 2; // Centro horizontal
     const centerY = height / 2; // Centro vertical
-    const circleRadius = 7; // Raio de cada círculo
+    const circleRadius = (raio * minorC) / ratioC; // Raio de cada círculo
     const gap = 1; // Espaçamento entre círculos
     const effectiveRadius = circleRadius + gap; // Raio efetivo considerando o gap
 
@@ -882,7 +849,6 @@ function phase7(){
 function phase8(){
     clean();
     let url;
-    raio=280;
     svg.selectAll("defs")
     .remove();
 
@@ -950,11 +916,9 @@ function phase8(){
 }
 
 //Egas Moniz
-///REVER ISTO
 function phase9(){
     clean();
     let url;
-    raio=280;
     svg.selectAll("defs")
     .remove();
 
@@ -1020,10 +984,10 @@ function phase9(){
     update();
 }
 
+//Jose Saramago
 function phase10(){
     clean();
     let url;
-    raio=280;
     svg.selectAll("defs")
     .remove();
 
@@ -1089,10 +1053,11 @@ function phase10(){
     update();
 }
 
+//demasiado cedo ou tarde
 function phase11() {
     console.log("FASE 11");
     clean();
-    raio=180;
+    let raio2=5*raio/9;
 
     svg.selectAll("defs")
         .remove();
@@ -1121,7 +1086,7 @@ function phase11() {
                     
                     if (wikidataId) {
                         const backgroundImageURL = await fetchWikidataImage(wikidataId);
-                        createBackgroundImagePattern(backgroundImageURL, `circle-bg-${index}`, raio);
+                        createBackgroundImagePattern(backgroundImageURL, `circle-bg-${index}`, raio2);
                     } else {
                         console.log(`Link da Wikidata inválido para laureado ${index + 1}.`);
                     }
@@ -1140,8 +1105,8 @@ function phase11() {
         
         // Adicionar os círculos com padrões de fundo
         const data = [
-            { id: 0, x: xScale(3.5), y: yScale(5), r: raio, color: "url(#circle-bg-0)" },
-            { id: 1, x: xScale(6.5), y: yScale(5), r: raio, color: "url(#circle-bg-1)" }
+            { id: 0, x: xScale(3.5), y: yScale(5), r: raio2, color: "url(#circle-bg-0)", name: laureatesWithIds[0][0].name, prizeCategory: laureatesWithIds[0][0].prizeCategory,texto: "...soon", anos: "25 years old" },
+            { id: 1, x: xScale(6.5), y: yScale(5), r: raio2, color: "url(#circle-bg-1)", name: laureatesWithIds[1][0].name, prizeCategory: laureatesWithIds[1][0].prizeCategory, texto:"...or late",anos: "90 years old" }
         ];
         
         svg.selectAll("circle")
@@ -1153,20 +1118,146 @@ function phase11() {
             .attr("r", d => d.r)
             .attr("fill", d => d.color)
             .attr("id", d => `backgroundCircle-${d.id}`);
+
+        // Primeiro foreignObject
+    svg.selectAll("foreignObject.text1")
+        .data(data)
+        .enter()
+        .append("foreignObject")
+        .attr("x", d => d.x - raio)
+        .attr("y", d => d.y + raio / 2 + 30) 
+        .attr("width", raio * 2) 
+        .attr("height", 100) 
+        .classed("text1", true)
+        .append("xhtml:div")
+        .attr("style", "font-size: 20px; color: black; text-align: center;")
+        .html(d => `<div style="font-weight: 600;">${d.name}</div><div>${d.prizeCategory}</div>`);
+
+    // Segundo foreignObject
+    svg.selectAll("foreignObject.text2")
+        .data(data)
+        .enter()
+        .append("foreignObject")
+        .attr("x", d => d.x - raio)
+        .attr("y", d => d.y - raio / 2 - 100) // Ajusta a posição para não sobrepor
+        .attr("width", raio * 2) 
+        .attr("height", 100) 
+        .classed("text2", true)
+        .append("xhtml:div")
+        .attr("style", "font-size: 24px; font-weight: normal; color: black; text-align: center;")
+        .html(d => `<div style="font-size: 20px;">${d.texto}</div><div style="font-weight: 700;">${d.anos}</div>`);
+     
     });
+
+    extra_info.innerHTML ="<p>These are the youngest and the oldest laureates</p>"
+}
+
+//recusaram prémios
+function phase12() {
+    console.log("FASE 12");
+    clean();
+    let raio2=5*raio/9;
+
+    svg.selectAll("defs")
+        .remove();
+
+    loadDataset(() => {
+        const targetIds = [637, 531]; // IDs dos laureados
+        const laureatesWithIds = targetIds.map(getLaureatesById);
+
+        // Exibir laureados encontrados
+        laureatesWithIds.forEach((laureate, index) => {
+            console.log(`Laureado com ID ${targetIds[index]}:`, laureate);
+        });
+
+        /*knownName.innerText = laureatesWithIds.map(l => l[0].name).join(", ");
+        category.innerHTML = laureatesWithIds.map(
+            l => `${l[0].prizeCategory} (${l[0].awardYear})`
+        ).join(" & ");*/
+
+        // Função assíncrona para buscar e aplicar imagens da Wikidata
+        const applyWikidataImages = async () => {
+            const imagePromises = laureatesWithIds.map(async (laureate, index) => {
+                try {
+                    const url = laureate[0].wikidata;
+                    const wikidataId = getWikidataId(url);
+                    console.log(`Wikidata ID para laureado ${index + 1}: ${wikidataId}`);
+                    
+                    if (wikidataId) {
+                        const backgroundImageURL = await fetchWikidataImage(wikidataId);
+                        createBackgroundImagePattern(backgroundImageURL, `circle-bg-${index}`, raio2);
+                    } else {
+                        console.log(`Link da Wikidata inválido para laureado ${index + 1}.`);
+                    }
+                } catch (error) {
+                    console.error(`Erro ao buscar a imagem da Wikidata para laureado ${index + 1}:`, error);
+                }
+            });
+            
+            //await Promise.all(imagePromises);
+        };
+
+        applyWikidataImages();
+
+        // Limpar círculos antigos
+        svg.selectAll("circle").remove();
+        
+        // Adicionar os círculos com padrões de fundo
+        const data = [
+            { id: 0, x: xScale(3.5), y: yScale(5), r: raio2, color: "url(#circle-bg-0)", name: laureatesWithIds[0][0].name, prizeCategory: laureatesWithIds[0][0].prizeCategory,texto: "declined" },
+            { id: 1, x: xScale(6.5), y: yScale(5), r: raio2, color: "url(#circle-bg-1)", name: laureatesWithIds[1][0].name, prizeCategory: laureatesWithIds[1][0].prizeCategory, texto:"declined" }
+        ];
+        
+        svg.selectAll("circle")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .attr("r", d => d.r)
+            .attr("fill", d => d.color)
+            .attr("id", d => `backgroundCircle-${d.id}`);
+
+        // Primeiro foreignObject
+    svg.selectAll("foreignObject.text1")
+        .data(data)
+        .enter()
+        .append("foreignObject")
+        .attr("x", d => d.x - raio)
+        .attr("y", d => d.y + raio / 2 + 30) 
+        .attr("width", raio * 2) 
+        .attr("height", 100) 
+        .classed("text1", true)
+        .append("xhtml:div")
+        .attr("style", "font-size: 20px; color: black; text-align: center;")
+        .html(d => `<div style="font-weight: 600;">${d.name}</div><div>${d.prizeCategory}</div>`);
+
+    // Segundo foreignObject
+    svg.selectAll("foreignObject.text2")
+        .data(data)
+        .enter()
+        .append("foreignObject")
+        .attr("x", d => d.x - raio)
+        .attr("y", d => d.y - raio / 2 - 100) // Ajusta a posição para não sobrepor
+        .attr("width", raio * 2) 
+        .attr("height", 100) 
+        .classed("text2", true)
+        .append("xhtml:div")
+        .attr("style", "font-size: 24px; font-weight: normal; color: black; text-align: center;")
+        .html(d => `<div style="font-size: 20px;">${d.texto}</div>`);
+     
+    });
+
+    extra_info.innerHTML ="<p>These laureates declined the Nobel Prize</p>"
 }
 
 function phase13(){
-    console.log("FASE 11");
-    d3.selectAll("#map").remove();
+    console.log("FASE 13");
     map();
-
 }
 
 function phase14(){
     console.log("FASE 14");
-
-
 }
 
 function phase15(){
@@ -1185,9 +1276,22 @@ function phase17(){
     clean();
 }
 
+//THE END
 function phase18(){
     console.log("FASE 18");
     clean();
+
+    svg.selectAll("text")
+        .data(data)
+        .enter()
+        .append("text")
+        .attr("x", "50%") 
+        .attr("y", "50%") 
+        .attr("width", "50%") //alterar a with
+        .attr("text-anchor", "middle") 
+        .style("dominant-baseline", "middle") 
+        .style("font-size", "42px") 
+        .text("We hope you've learnt more about the Nobel Prizes! Thank you for your time");
 }
 
 function initializePhases() {
@@ -1210,6 +1314,7 @@ function runPhase(phase) {
     if (phase === 9) phase9();
     if (phase === 10) phase10();
     if (phase === 11) phase11();
+    if (phase === 12) phase12();
     if (phase === 13) phase13();
     if (phase === 14) phase14();
     if (phase === 15) phase15();
@@ -1272,13 +1377,19 @@ function clean(){
     .selectAll("*")
     .remove();
 
+    svg.selectAll("text").remove()
     svg.selectAll("pattern").remove()
     svg.selectAll("image").remove();
     d3.select('body').selectAll("#tooltip").remove()
+    d3.selectAll("#map").remove();
+    d3.selectAll("defs").remove();
+    svg.selectAll("foreignObject").remove();
     section.style.display = "flex";
     knownName.innerText = " ";
     category.innerText = " ";
     extra_info.innerText = " ";
+    label.innerHTML = ""; 
+   
 }
 
 window.initializePhases = initializePhases;
