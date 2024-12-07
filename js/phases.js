@@ -31,7 +31,7 @@ let title = document.querySelector("#title");
 let other_text = document.querySelector("#other_text");
 let body = document.querySelector("body");
 let section = document.querySelector("section");
-let maxPhase=16;
+let maxPhase = 18;
 
 //estado inicial - imagem moeda
 /*function phase0() {
@@ -157,6 +157,12 @@ function map() {
 
   window.addEventListener('resize', resize);
 }
+
+
+function getLaureatesById(targetId) {
+    return laureates.filter((laureate) => laureate.id === targetId);
+}
+
 //estado inicial - moeda com número
 function phase1() {
     label.innerHTML = ""; // Limpa conteúdo existente\
@@ -368,125 +374,85 @@ function phase3() {
 
 //separa por grupos de cores entidades/género
 function phase4() {
+    console.log("fase 4");
+    clean();
 
-    console.log("fase 5");
-    svg.selectAll("text").remove()
-    knownName.innerText = " ";
-    category.innerText = " ";
-    extra_info.innerText = " ";
-    label.innerHTML = ""; // Limpa conteúdo existente
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const circleRadius = 7;
+    const gap = 1;
+    const effectiveRadius = circleRadius + gap;
+    const val = 250;
 
-    const centerX = width / 2; //Centro horizontal
-    const centerY = height / 2; // Centro vertical
-    const circleRadius = 7; // Raio de cada círculo
-    const gap = 1; // Espaçamento entre círculos
-    const effectiveRadius = circleRadius + gap; // Raio efetivo considerando o gap
-
-    //valor que define o género de um triangulos
-    let val = 250;
-     // Definir centros para cada gênero
     const centers = {
-        male: { x: centerX-val/2, y: centerY },
-        female: { x: centerX+val, y: centerY+val/2 },
-        other: { x: centerX+val, y: centerY-val/3 }
+        male: { x: centerX - val / 2, y: centerY },
+        female: { x: centerX + val, y: centerY + val / 2 },
+        org: { x: centerX + val, y: centerY - val / 3 }
     };
 
-    // Grupos de dados para cada gênero
-    const groups = {
-        male: [],
-        female: [],
-        other: []
-    };
+    const groups = laureates.reduce((acc, laureate) => {
+        (acc[laureate.gender] = acc[laureate.gender] || []).push(laureate);
+        return acc;
+    }, {});
 
-    // Separar laureados por gênero
-    laureates.forEach(laureate => {
-        const gender = laureate.gender;
-        if (gender === 'male') {
-            groups.male.push(laureate);
-        } else if (gender === 'female') {
-            groups.female.push(laureate);
-        } else {
-            groups.other.push(laureate);
+    const colors = { male: green1, female: terra, org: yellow };
+
+    data = []; // Redefine data
+    Object.entries(groups).forEach(([gender, laureates]) => {
+        if (!centers[gender]) {
+            console.warn(`Gênero desconhecido encontrado: ${gender}`);
+            return; // Ignora gêneros desconhecidos
         }
-    });
 
-    // Processar cada grupo
-    data = []; // Redefine os dados
-    const categories = {};
-    Object.keys(groups).forEach(groupKey => {
-        const laureates = groups[groupKey];
-        const { x: groupCenterX, y: groupCenterY } = centers[groupKey];
-        const color = groupKey === 'male' ? green1 : groupKey === 'female' ? terra : yellow;
+        const { x: groupCenterX, y: groupCenterY } = centers[gender];
+        const color = colors[gender];
 
-        let currentRadius = 0; // Raio atual da camada
-        let index = 0; // Índice para acessar laureates
+        let currentRadius = 0;
+        let index = 0;
 
         while (index < laureates.length) {
-            currentRadius += effectiveRadius * 2; // Incrementa o raio da camada com base no tamanho efetivo
-            // Número de círculos na camada atual, proporcional ao comprimento da circunferência
+            currentRadius += effectiveRadius * 2;
             const circumference = 2 * Math.PI * currentRadius;
             const circlesInLayer = Math.min(
                 laureates.length - index,
                 Math.floor(circumference / (effectiveRadius * 2))
             );
-
-            // Ângulo entre círculos nesta camada
             const angleStep = (2 * Math.PI) / circlesInLayer;
 
-            // Adiciona os círculos da camada
             for (let i = 0; i < circlesInLayer; i++) {
                 const angle = i * angleStep;
                 const x = groupCenterX + currentRadius * Math.cos(angle);
                 const y = groupCenterY + currentRadius * Math.sin(angle);
 
-                const laureate = laureates[index];
-
+                const laureate = laureates[index++];
                 data.push({
-                    x: x,
-                    y: y,
+                    x,
+                    y,
                     r: circleRadius,
-                    color: color,
-                    id: laureate.id,
-                    name: laureate.name,
-                    gender: laureate.gender,
-                    prizeCategory: laureate.prizeCategory,
-                    awardYear: laureate.awardYear,
-                    wikidata: laureate.wikidata,
+                    color,
+                    ...laureate
                 });
-                index++; // Avança para o próximo laureado
             }
         }
-    });
 
-    Object.keys(categories).forEach(gender => {
-        const div = document.createElement("div");
-        div.classList.add("content_label");
-
-        const labelColor = document.createElement("div");
-        labelColor.classList.add("label_color");
-        labelColor.style.backgroundColor = gender === "male" ? green1 : gender === "female" ? terra : yellow;
-
-        const labelText = document.createElement("p");
-        labelText.classList.add("label_text");
-        labelText.textContent = `${gender} (${categories[gender]})`;
-
-        div.appendChild(labelColor);
-        div.appendChild(labelText);
-        label.appendChild(div);
+        d3.select("#label")
+            .append("div")
+            .attr("class", "content_label")
+            .html(`
+                <div class="label_color" style="background-color: ${color}"></div>
+                <p class="label_text">${gender} (${laureates.length})</p>
+            `);
     });
 
     update();
+
 }
 
 //separa por categorias
 function phase5() {
-label.innerHTML = ""; // Limpa conteúdo existente
-knownName.innerText = " ";
-category.innerText = " ";
-extra_info.innerText = " ";
-svg.selectAll("text").remove()
+    clean();
 
-console.log("fase 6");
+    console.log("fase 6");
 
 //se estiver na phase5() e voltar atras remove o pattern
   svg.selectAll("pattern").remove()
@@ -755,315 +721,440 @@ function phase6() {
 }
 
 function phase7(){
-    svg.selectAll("text").remove()
-    knownName.innerText = " ";
-    category.innerText = " ";
-    extra_info.innerText = " ";
-    label.innerHTML = ""; // Limpa conteúdo existente
+    clean();
 
-        console.log("fase 8");
-    
-        const centerX = width / 2; // Centro horizontal
-        const centerY = height / 2; // Centro vertical
-        const circleRadius = 7; // Raio de cada círculo
-        const gap = 1; // Espaçamento entre círculos
-        const effectiveRadius = circleRadius + gap; // Raio efetivo considerando o gap
-    
-        // Valor para definir deslocamento entre as categorias (diminuído para manter as categorias mais próximas)
-        const val = 280; // Ajuste aqui para reduzir a distância entre as categorias
-        
-        // Lista de categorias únicas no dataset
-        const categories = [...new Set(laureates.map(laureate => laureate.prizeCategory))];
-    
-        // Calcular centros para cada categoria (em uma distribuição circular)
-        const centers = {};
-        const angleStep = (2 * Math.PI) / categories.length;
-    
-        categories.forEach((category, index) => {
-            const angle = index * angleStep;
-            centers[category] = {
-                x: centerX + val * Math.cos(angle),
-                y: centerY + val * Math.sin(angle)
-            };
-        });
-    
-        // Grupos de dados para cada categoria
-        const groups = {};
-        categories.forEach(category => {
-            groups[category] = {
-                male: [],
-                female: [],
-                other: []
-            };
-        });
-    
-        // Separar laureados por categoria e gênero
-        laureates.forEach(laureate => {
-            const category = laureate.prizeCategory;
-            const gender = laureate.gender;
-    
-            if (groups[category]) {
-                if (gender === 'male') {
-                    groups[category].male.push(laureate);
-                } else if (gender === 'female') {
-                    groups[category].female.push(laureate);
-                } else {
-                    groups[category].other.push(laureate);
-                }
-            }
-        });
-    
-        // Processar cada grupo
-        data = []; // Redefine os dados
-        Object.keys(groups).forEach(groupKey => {
-            const laureatesByGender = groups[groupKey];
-            const { x: groupCenterX, y: groupCenterY } = centers[groupKey];
-    
-            // Definir os 3 pontos centrais para os gêneros (distribuídos ao longo da circunferência)
-            const genderCenters = {
-                male: { x: groupCenterX, y: groupCenterY},
-                female: { x: groupCenterX+100, y: groupCenterY},
-                other: { x: groupCenterX-100, y: groupCenterY}
-            };
-    
-            // Processar laureados de cada gênero dentro da categoria
-            Object.keys(laureatesByGender).forEach(genderKey => {
-                const laureates = laureatesByGender[genderKey];
-                const { x: genderCenterX, y: genderCenterY } = genderCenters[genderKey];
-    
-                // Cor associada ao gênero
-                const color = getColorForGender(genderKey);
-    
-                let currentRadius = 0; // Raio atual da camada
-                let index = 0; // Índice para acessar laureates
-    
-                while (index < laureates.length) {
-                    currentRadius += effectiveRadius * 2; // Incrementa o raio da camada com base no tamanho efetivo
-                    // Número de círculos na camada atual, proporcional ao comprimento da circunferência
-                    const circumference = 2 * Math.PI * currentRadius;
-                    const circlesInLayer = Math.min(
-                        laureates.length - index,
-                        Math.floor(circumference / (effectiveRadius * 2))
-                    );
-    
-                    // Ângulo entre círculos nesta camada
-                    const angleStep = (2 * Math.PI) / circlesInLayer;
+    console.log("fase 8");
 
-                    // Adiciona os círculos da camada
-                    for (let i = 0; i < circlesInLayer; i++) {
-                        const angle = i * angleStep;
-                        const x = genderCenterX + currentRadius * Math.cos(angle);
-                        const y = genderCenterY + currentRadius * Math.sin(angle);
-    
-                        const laureate = laureates[index];
-    
-                        data.push({
-                            x: x,
-                            y: y,
-                            r: circleRadius,
-                            color: color,
-                            id: laureate.id,
-                            name: laureate.name,
-                            gender: laureate.gender,
-                            prizeCategory: laureate.prizeCategory,
-                            awardYear: laureate.awardYear,
-                            wikidata: laureate.wikidata,
-                        });
-                        index++; // Avança para o próximo laureado
-                    }
-                }
-            });
-        });
-    
-            // Conta os laureados por gênero
-        const genderCounts = {};
-        laureates.forEach(laureate => {
-            const gender = laureate.gender;
-            if (!genderCounts[gender]) {
-                genderCounts[gender] = 0;
-            }
-            genderCounts[gender]++;
-        });
-            // Cria labels para cada gênero
-        Object.keys(genderCounts).forEach(gender => {
-            const div = document.createElement("div");
-            div.classList.add("content_label");
+    const centerX = width / 2; // Centro horizontal
+    const centerY = height / 2; // Centro vertical
+    const circleRadius = 7; // Raio de cada círculo
+    const gap = 1; // Espaçamento entre círculos
+    const effectiveRadius = circleRadius + gap; // Raio efetivo considerando o gap
 
-            const labelColor = document.createElement("div");
-            labelColor.classList.add("label_color");
-            labelColor.style.backgroundColor = getColorForGender(gender); // Usa a cor associada ao gênero
-
-            const labelText = document.createElement("p");
-            labelText.classList.add("label_text");
-            labelText.textContent = `${gender} (${genderCounts[gender]})`; // Nome do gênero e número de laureados
-
-            div.appendChild(labelColor);
-            div.appendChild(labelText);
-            label.appendChild(div);
-        });
-        
-        update(); // Atualiza o SVG com os novos círculos
+    // Valor para definir deslocamento entre as categorias (diminuído para manter as categorias mais próximas)
+    const val = 280; // Ajuste aqui para reduzir a distância entre as categorias
     
-        // Função para obter a cor com base no gênero
-        function getColorForGender(gender) {
+    // Lista de categorias únicas no dataset
+    const categories = [...new Set(laureates.map(laureate => laureate.prizeCategory))];
+
+    // Calcular centros para cada categoria (em uma distribuição circular)
+    const centers = {};
+    const angleStep = (2 * Math.PI) / categories.length;
+
+    categories.forEach((category, index) => {
+        const angle = index * angleStep;
+        centers[category] = {
+            x: centerX + val * Math.cos(angle),
+            y: centerY + val * Math.sin(angle)
+        };
+    });
+
+    // Grupos de dados para cada categoria
+    const groups = {};
+    categories.forEach(category => {
+        groups[category] = {
+            male: [],
+            female: [],
+            other: []
+        };
+    });
+
+    // Separar laureados por categoria e gênero
+    laureates.forEach(laureate => {
+        const category = laureate.prizeCategory;
+        const gender = laureate.gender;
+
+        if (groups[category]) {
             if (gender === 'male') {
-                return green1;  // Cor para male
+                groups[category].male.push(laureate);
             } else if (gender === 'female') {
-                return terra;  // Cor para female
+                groups[category].female.push(laureate);
             } else {
-                return yellow;  // Cor para other
+                groups[category].other.push(laureate);
             }
         }
+    });
+
+    // Processar cada grupo
+    data = []; // Redefine os dados
+    Object.keys(groups).forEach(groupKey => {
+        const laureatesByGender = groups[groupKey];
+        const { x: groupCenterX, y: groupCenterY } = centers[groupKey];
+
+        // Definir os 3 pontos centrais para os gêneros (distribuídos ao longo da circunferência)
+        const genderCenters = {
+            male: { x: groupCenterX, y: groupCenterY},
+            female: { x: groupCenterX+100, y: groupCenterY},
+            other: { x: groupCenterX-100, y: groupCenterY}
+        };
+
+        // Processar laureados de cada gênero dentro da categoria
+        Object.keys(laureatesByGender).forEach(genderKey => {
+            const laureates = laureatesByGender[genderKey];
+            const { x: genderCenterX, y: genderCenterY } = genderCenters[genderKey];
+
+            // Cor associada ao gênero
+            const color = getColorForGender(genderKey);
+
+            let currentRadius = 0; // Raio atual da camada
+            let index = 0; // Índice para acessar laureates
+
+            while (index < laureates.length) {
+                currentRadius += effectiveRadius * 2; // Incrementa o raio da camada com base no tamanho efetivo
+                // Número de círculos na camada atual, proporcional ao comprimento da circunferência
+                const circumference = 2 * Math.PI * currentRadius;
+                const circlesInLayer = Math.min(
+                    laureates.length - index,
+                    Math.floor(circumference / (effectiveRadius * 2))
+                );
+
+                // Ângulo entre círculos nesta camada
+                const angleStep = (2 * Math.PI) / circlesInLayer;
+
+                // Adiciona os círculos da camada
+                for (let i = 0; i < circlesInLayer; i++) {
+                    const angle = i * angleStep;
+                    const x = genderCenterX + currentRadius * Math.cos(angle);
+                    const y = genderCenterY + currentRadius * Math.sin(angle);
+
+                    const laureate = laureates[index];
+
+                    data.push({
+                        x: x,
+                        y: y,
+                        r: circleRadius,
+                        color: color,
+                        id: laureate.id,
+                        name: laureate.name,
+                        gender: laureate.gender,
+                        prizeCategory: laureate.prizeCategory,
+                        awardYear: laureate.awardYear,
+                        wikidata: laureate.wikidata,
+                    });
+                    index++; // Avança para o próximo laureado
+                }
+            }
+        });
+    });
+
+        // Conta os laureados por gênero
+    const genderCounts = {};
+    laureates.forEach(laureate => {
+        const gender = laureate.gender;
+        if (!genderCounts[gender]) {
+            genderCounts[gender] = 0;
+        }
+        genderCounts[gender]++;
+    });
+        // Cria labels para cada gênero
+    Object.keys(genderCounts).forEach(gender => {
+        const div = document.createElement("div");
+        div.classList.add("content_label");
+
+        const labelColor = document.createElement("div");
+        labelColor.classList.add("label_color");
+        labelColor.style.backgroundColor = getColorForGender(gender); // Usa a cor associada ao gênero
+
+        const labelText = document.createElement("p");
+        labelText.classList.add("label_text");
+        labelText.textContent = `${gender} (${genderCounts[gender]})`; // Nome do gênero e número de laureados
+
+        div.appendChild(labelColor);
+        div.appendChild(labelText);
+        label.appendChild(div);
+    });
+    
+    update(); // Atualiza o SVG com os novos círculos
+
+    // Função para obter a cor com base no gênero
+    function getColorForGender(gender) {
+        if (gender === 'male') {
+            return green1;  // Cor para male
+        } else if (gender === 'female') {
+            return terra;  // Cor para female
+        } else {
+            return yellow;  // Cor para other
+        }
+    }
 }
 
 //Marie Curie
 function phase8(){
+    clean();
+    let url;
+    raio=280;
+    svg.selectAll("defs")
+    .remove();
+
+    loadDataset(() => {
+        const targetId = 6;
+        const laureatesWithId = getLaureatesById(targetId);
+     
+        // Exibir os laureados encontrados
+        console.log(`Laureados com ID ${targetId}:`, laureatesWithId);
+        knownName.innerText=laureatesWithId[0].name;
+        category.innerHTML=laureatesWithId[0].prizeCategory + "(" + laureatesWithId[0].awardYear + ")<br>" + laureatesWithId[1].prizeCategory + "(" + laureatesWithId[1].awardYear + ")";
+        url = laureatesWithId[0].wikidata;
+
+        (async () => {
+          try {
+              const wikidataId = getWikidataId(url); // Obtém o ID da Wikidata a partir da URL
+              console.log(wikidataId);
+              if (wikidataId) {
+                 
+                 const backgroundImageURL = await fetchWikidataImage(wikidataId); // Aguarda o resultado da Promise
+      
+                  // Define um padrão para a imagem
+                  const defs = svg.append("defs");
+                  defs.append("pattern")
+                      .attr("id", "circle-bg") // ID único do padrão
+                      .attr("width", 1)
+                      .attr("height", 1)
+                      .append("image")
+                      .attr("xlink:href", backgroundImageURL)
+                      .attr("preserveAspectRatio", "xMidYMid slice") // Ajusta a proporção
+                      .attr("width", raio*2) // Ajuste para o tamanho correto da imagem
+                      .attr("height", raio*2); // Ajuste para o tamanho correto da imagem
+                  
+              } else {
+                  console.log("Link da Wikidata inválido.");
+              }
+          } catch (error) {
+              console.error("Erro ao buscar a imagem da Wikidata:", error);
+          }
+      })();
+      svg.selectAll("circle")
+            .remove();
+            
+        // Adiciona o círculo com o padrão de fundo
+        data = [
+            { id: 0, x: xScale(5), y: yScale(5), r: raio, color: "url(#circle-bg)" }
+        ];
     
-    label.innerHTML = ""; // Limpa conteúdo existente
-    knownName.innerText = " ";
-    category.innerText = " ";
-    extra_info.innerText = " ";
-    
-    knownName.innerText = "Marie Curie";
-    category.innerHTML = "Physics (1903) <br> Chemistry (1911)";
+        svg.selectAll("circle")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .attr("r", d => d.r)
+            .attr("fill", d => d.color)
+            .attr("id", "backgroundCircle"); // Adiciona um ID para o círculo
+
+     });
+
     extra_info.innerHTML ="<p>first winner of 2 Nobel Prizes</p><p>the only woman that have won two Nobel Prizes</p>"
 
-    console.log("FASE 9");
-    const url= "https://www.wikidata.org/wiki/Q7186"; //url da pagina completa da wikidata
-    console.log(getWikidataId(url));
-  //const backgroundImageURL = "../../marie_curie.png";
-    const svg = d3.select("svg");
-
-  (async () => {
-    try {
-        const wikidataId = getWikidataId(url); // Obtém o ID da Wikidata a partir da URL
-        if (wikidataId) {
-           
-           const backgroundImageURL = await fetchWikidataImage(wikidataId); // Aguarda o resultado da Promise
-
-                // Limpa o SVG antes de adicionar elementos
-            //svg.selectAll("*").remove();
-
-            // Define um padrão para a imagem
-            const defs = svg.append("defs");
-            defs.append("pattern")
-                .attr("id", "circle-bg") // ID único do padrão
-                //.attr("patternUnits", "objectBoundingBox")
-                .attr("width", 1)
-                .attr("height", 1)
-                .append("image")
-                .attr("xlink:href", backgroundImageURL)
-                .attr("preserveAspectRatio", "xMidYMid slice") // Ajusta a proporção
-                .attr("width", raio*2) // Ajuste para o tamanho correto da imagem
-                .attr("height", raio*2); // Ajuste para o tamanho correto da imagem
-            
-        } else {
-            console.log("Link da Wikidata inválido.");
-        }
-    } catch (error) {
-        console.error("Erro ao buscar a imagem da Wikidata:", error);
-    }
-})();
+    update();
     
-
-  // Adiciona o círculo com o padrão de fundo
-  data = [
-      { id: 0, x: xScale(5), y: yScale(5), r: raio, color: "url(#circle-bg)" }
-  ];
-
-  svg.selectAll("circle")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("cx", d => d.x)
-      .attr("cy", d => d.y)
-      .attr("r", d => d.r)
-      .attr("fill", d => d.color)
-      .attr("id", "backgroundCircle"); // Adiciona um ID para o círculo
-
-  update();
 }
 
 //Egas Moniz
 ///REVER ISTO
 function phase9(){
-    /* svg.selectAll("text").remove() */
-    label.innerHTML = ""; // Limpa conteúdo existente
-    knownName.innerText = " ";
-    category.innerText = " ";
-    extra_info.innerText = " ";
+    clean();
+    let url;
+    raio=280;
+    svg.selectAll("defs")
+    .remove();
 
-    knownName.innerText = "Egas Moniz";
-    category.innerHTML = "Medicina ()";
-    extra_info.innerHTML ="Portuguese"
+    loadDataset(() => {
+        const targetId = 348;
+        const laureatesWithId = getLaureatesById(targetId);
+     
+        // Exibir os laureados encontrados
+        console.log(`Laureados com ID ${targetId}:`, laureatesWithId);
+        knownName.innerText=laureatesWithId[0].name;
+        category.innerHTML=laureatesWithId[0].prizeCategory + "(" + laureatesWithId[0].awardYear + ")";
 
-    console.log("FASE 9");
-    const url= "https://www.wikidata.org/wiki/Q273219"; //url da pagina completa da wikidata
-    console.log(getWikidataId(url));
-    const svg = d3.select("svg");
+        url = laureatesWithId[0].wikidata;
 
-  (async () => {
-    try {
-        const wikidataId = getWikidataId(url); // Obtém o ID da Wikidata a partir da URL
-        if (wikidataId) {
-           
-           const backgroundImageURL = await fetchWikidataImage(wikidataId); // Aguarda o resultado da Promise
-
-                // Limpa o SVG antes de adicionar elementos
-            //svg.selectAll("*").remove();
-
-            // Define um padrão para a imagem
-            const defs = svg.append("defs");
-            defs.append("pattern")
-                .attr("id", "circle-bg") // ID único do padrão
-                //.attr("patternUnits", "objectBoundingBox")
-                .attr("width", 1)
-                .attr("height", 1)
-                .append("image")
-                .attr("xlink:href", backgroundImageURL)
-                .attr("preserveAspectRatio", "xMidYMid slice") // Ajusta a proporção
-                .attr("width", raio*2) // Ajuste para o tamanho correto da imagem
-                .attr("height", raio*2); // Ajuste para o tamanho correto da imagem
+        (async () => {
+          try {
+              const wikidataId = getWikidataId(url); // Obtém o ID da Wikidata a partir da URL
+              console.log(wikidataId);
+              if (wikidataId) {
+                 
+                 const backgroundImageURL = await fetchWikidataImage(wikidataId); // Aguarda o resultado da Promise
+      
+                  // Define um padrão para a imagem
+                  const defs = svg.append("defs");
+                  defs.append("pattern")
+                      .attr("id", "circle-bg") // ID único do padrão
+                      .attr("width", 1)
+                      .attr("height", 1)
+                      .append("image")
+                      .attr("xlink:href", backgroundImageURL)
+                      .attr("preserveAspectRatio", "xMidYMid slice") // Ajusta a proporção
+                      .attr("width", raio*2) // Ajuste para o tamanho correto da imagem
+                      .attr("height", raio*2); // Ajuste para o tamanho correto da imagem
+                  
+              } else {
+                  console.log("Link da Wikidata inválido.");
+              }
+          } catch (error) {
+              console.error("Erro ao buscar a imagem da Wikidata:", error);
+          }
+      })();
+      svg.selectAll("circle")
+            .remove();
             
-        } else {
-            console.log("Link da Wikidata inválido.");
-        }
-    } catch (error) {
-        console.error("Erro ao buscar a imagem da Wikidata:", error);
-    }
-})();
+        // Adiciona o círculo com o padrão de fundo
+        data = [
+            { id: 0, x: xScale(5), y: yScale(5), r: raio, color: "url(#circle-bg)" }
+        ];
     
+        svg.selectAll("circle")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .attr("r", d => d.r)
+            .attr("fill", d => d.color)
+            .attr("id", "backgroundCircle"); // Adiciona um ID para o círculo
 
-  // Adiciona o círculo com o padrão de fundo
-  data = [
-      { id: 0, x: xScale(5), y: yScale(5), r: raio, color: "url(#circle-bg)" }
-  ];
+    });
 
-  svg.selectAll("circle")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("cx", d => d.x)
-      .attr("cy", d => d.y)
-      .attr("r", d => d.r)
-      .attr("fill", d => d.color)
-      .attr("id", "backgroundCircle"); // Adiciona um ID para o círculo
-
-  update();
+    extra_info.innerHTML ="<p>Portuguese People</p>"
+    update();
 }
 
 function phase10(){
+    clean();
+    let url;
+    raio=280;
+    svg.selectAll("defs")
+    .remove();
 
-    console.log("FASE 10");
-    //remove o pattern ao avançar para a phase6();
-    svg.selectAll("pattern").remove()
-    svg.selectAll("image").remove();
-    section.style.display = "flex";
-    knownName.innerText = " ";
-    category.innerText = " ";
-    extra_info.innerText = " ";
+    loadDataset(() => {
+        const targetId = 675;
+        const laureatesWithId = getLaureatesById(targetId);
+     
+        // Exibir os laureados encontrados
+        console.log(`Laureados com ID ${targetId}:`, laureatesWithId);
+        knownName.innerText=laureatesWithId[0].name;
+        category.innerHTML=laureatesWithId[0].prizeCategory + "(" + laureatesWithId[0].awardYear + ")";
+
+        url = laureatesWithId[0].wikidata;
+
+        (async () => {
+          try {
+              const wikidataId = getWikidataId(url); // Obtém o ID da Wikidata a partir da URL
+              console.log(wikidataId);
+              if (wikidataId) {
+                 
+                 const backgroundImageURL = await fetchWikidataImage(wikidataId); // Aguarda o resultado da Promise
+      
+                  // Define um padrão para a imagem
+                  const defs = svg.append("defs");
+                  defs.append("pattern")
+                      .attr("id", "circle-bg") // ID único do padrão
+                      .attr("width", 1)
+                      .attr("height", 1)
+                      .append("image")
+                      .attr("xlink:href", backgroundImageURL)
+                      .attr("preserveAspectRatio", "xMidYMid slice") // Ajusta a proporção
+                      .attr("width", raio*2) // Ajuste para o tamanho correto da imagem
+                      .attr("height", raio*2); // Ajuste para o tamanho correto da imagem
+                  
+              } else {
+                  console.log("Link da Wikidata inválido.");
+              }
+          } catch (error) {
+              console.error("Erro ao buscar a imagem da Wikidata:", error);
+          }
+      })();
+      svg.selectAll("circle")
+            .remove();
+            
+        // Adiciona o círculo com o padrão de fundo
+        data = [
+            { id: 0, x: xScale(5), y: yScale(5), r: raio, color: "url(#circle-bg)" }
+        ];
+    
+        svg.selectAll("circle")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .attr("r", d => d.r)
+            .attr("fill", d => d.color)
+            .attr("id", "backgroundCircle"); // Adiciona um ID para o círculo
+
+    });
+
+    extra_info.innerHTML ="<p>Portuguese People</p>"
+    update();
 }
 
+function phase11() {
+    console.log("FASE 11");
+    clean();
+    raio=180;
+
+    svg.selectAll("defs")
+        .remove();
+
+    loadDataset(() => {
+        const targetIds = [21, 820]; // IDs dos laureados
+        const laureatesWithIds = targetIds.map(getLaureatesById);
+
+        // Exibir laureados encontrados
+        laureatesWithIds.forEach((laureate, index) => {
+            console.log(`Laureado com ID ${targetIds[index]}:`, laureate);
+        });
+
+        /*knownName.innerText = laureatesWithIds.map(l => l[0].name).join(", ");
+        category.innerHTML = laureatesWithIds.map(
+            l => `${l[0].prizeCategory} (${l[0].awardYear})`
+        ).join(" & ");*/
+
+        // Função assíncrona para buscar e aplicar imagens da Wikidata
+        const applyWikidataImages = async () => {
+            const imagePromises = laureatesWithIds.map(async (laureate, index) => {
+                try {
+                    const url = laureate[0].wikidata;
+                    const wikidataId = getWikidataId(url);
+                    console.log(`Wikidata ID para laureado ${index + 1}: ${wikidataId}`);
+                    
+                    if (wikidataId) {
+                        const backgroundImageURL = await fetchWikidataImage(wikidataId);
+                        createBackgroundImagePattern(backgroundImageURL, `circle-bg-${index}`, raio);
+                    } else {
+                        console.log(`Link da Wikidata inválido para laureado ${index + 1}.`);
+                    }
+                } catch (error) {
+                    console.error(`Erro ao buscar a imagem da Wikidata para laureado ${index + 1}:`, error);
+                }
+            });
+            
+            //await Promise.all(imagePromises);
+        };
+
+        applyWikidataImages();
+
+        // Limpar círculos antigos
+        svg.selectAll("circle").remove();
+        
+        // Adicionar os círculos com padrões de fundo
+        const data = [
+            { id: 0, x: xScale(3.5), y: yScale(5), r: raio, color: "url(#circle-bg-0)" },
+            { id: 1, x: xScale(6.5), y: yScale(5), r: raio, color: "url(#circle-bg-1)" }
+        ];
+        
+        svg.selectAll("circle")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .attr("r", d => d.r)
+            .attr("fill", d => d.color)
+            .attr("id", d => `backgroundCircle-${d.id}`);
+    });
+}
 
 function phase13(){
     console.log("FASE 11");
@@ -1089,11 +1180,22 @@ function phase16(){
     const main = runtime.module(define, Inspector.into(document.body));
 }
 
+function phase17(){
+    console.log("FASE 17");
+    clean();
+}
+
+function phase18(){
+    console.log("FASE 18");
+    clean();
+}
+
 function initializePhases() {
     runPhase(1);
 }
 
 function runPhase(phase) {
+    clean()
     d3.selectAll("#map").remove();
     d3.selectAll(".observablehq").remove();
     //if (phase === 0) phase0();
@@ -1107,10 +1209,13 @@ function runPhase(phase) {
     if (phase === 8) phase8();
     if (phase === 9) phase9();
     if (phase === 10) phase10();
+    if (phase === 11) phase11();
     if (phase === 13) phase13();
     if (phase === 14) phase14();
     if (phase === 15) phase15();
     if (phase === 16) phase16();
+    if (phase === 17) phase17();
+    if (phase === 18) phase18();
 
 }
 
@@ -1148,6 +1253,35 @@ async function fetchWikidataImage(wikidataId) {
   }
 }
 
+// Função para criar padrões de imagem no SVG
+function createBackgroundImagePattern(imageURL, patternId, radius) {
+    const defs = svg.append("defs");
+    defs.append("pattern")
+        .attr("id", patternId)
+        .attr("width", 1)
+        .attr("height", 1)
+        .append("image")
+        .attr("xlink:href", imageURL)
+        .attr("preserveAspectRatio", "xMidYMid slice")
+        .attr("width", radius * 2) // Largura proporcional ao raio
+        .attr("height", radius * 2); // Altura proporcional ao raio
+}
+
+function clean(){
+    d3.select("#label")
+    .selectAll("*")
+    .remove();
+
+    svg.selectAll("pattern").remove()
+    svg.selectAll("image").remove();
+    d3.select('body').selectAll("#tooltip").remove()
+    section.style.display = "flex";
+    knownName.innerText = " ";
+    category.innerText = " ";
+    extra_info.innerText = " ";
+}
+
 window.initializePhases = initializePhases;
 window.runPhase = runPhase;
 window.maxPhase = maxPhase;
+
