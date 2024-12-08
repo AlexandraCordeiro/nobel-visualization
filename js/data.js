@@ -1,6 +1,6 @@
 let data = [];
 let laureates = [];
-const laureatesFile = "../../dataset/laureates_data.csv";
+const laureatesFile = "../dataset/laureates_data.csv";
 
 function loadDataset(callback) {
     d3.csv(laureatesFile)
