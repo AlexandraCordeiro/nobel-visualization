@@ -410,6 +410,8 @@ function phase1() {
 
   data = [{ id: 0, x: xScale(5), y: yScale(5), r: raio, color: yellow }];
 
+  extra_info.innerHTML = "Use the <b>arrow keys</b> or <b>click on the side navigation bar </b> to move forwards/backwards";
+
   update();
   svg.selectAll("circle").attr("id", "circle_solo");
 
