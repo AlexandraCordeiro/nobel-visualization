@@ -600,7 +600,7 @@ function phase4() {
   const centers = {
     male: { x: centerX - val / 2, y: centerY },
     female: { x: centerX + val, y: centerY + val / 2 },
-    org: { x: centerX + val, y: centerY - val / 3 },
+    organization: { x: centerX + val, y: centerY - val / 3 },
   };
 
   const groups = laureates.reduce((acc, laureate) => {
@@ -608,7 +608,7 @@ function phase4() {
     return acc;
   }, {});
 
-  const colors = { male: green1, female: terra, org: yellow };
+  const colors = { male: green1, female: terra, organization: yellow };
 
   data = []; // Redefine data
   Object.entries(groups).forEach(([gender, laureates]) => {
