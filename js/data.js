@@ -13,13 +13,9 @@ function loadDataset(callback) {
                 gender: d.gender,
                 wikidata: d.wikidata
             }));
-            callback(); // Executa o callback depois do carregamento
+            callback(); // Executa o callback depois de carregar
         })
         .catch((error) => {
             console.error("Erro ao carregar os dados:", error);
         });
 }
-
-/*function getLaureates() {
-    return laureates;
-}*/
