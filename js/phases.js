@@ -113,10 +113,26 @@ function wordCloud() {
 }
 
 /*TOP UNIVERSITIES______________________________________ */
+function mouseOverLollipop(e, d) {
+  console.log(d)
+
+  d3.select("#tooltip")
+    .transition()
+    .duration(200)
+    .style("opacity", 1)
+    .text(`${d[0]}\n${d[1].length} laureates`);
+}
+
 function topUniversities() {
   // Parse the Data
   d3.csv("../dataset/laureates_data.csv").then((data) => {
-    // Set the dimensions and margins of the graph
+
+    // tooltip
+    d3.select("body")
+    .append("div")
+    .attr("id", "tooltip")
+    .attr("style", "position: absolute; opacity: 0;");
+
     let width = window.innerWidth * 0.7;
     let height = window.innerHeight * 0.7;
 
@@ -124,7 +140,6 @@ function topUniversities() {
     let innerWidth = width - margin.left - margin.right;
     let innerHeight = height - margin.top - margin.bottom;
 
-    // Append the svg object to the body of the page
     let svg = d3
       .select("body")
       .append("svg")
@@ -159,13 +174,13 @@ function topUniversities() {
       .selectAll("text")
       .attr("transform", "translate(-10,0)rotate(-45)")
       .style("text-anchor", "end")
-      .style("font-family", "var(--jost)") // Change font to var(--jost)
-      .style("font-size", "14px"); // Change font size for X-axis ticks
+      .style("font-family", "var(--jost)")
+      .style("font-size", "14px"); 
 
     // Add Y axis
     let y = d3
       .scaleBand()
-      .domain(top10Data.map((d) => d[0])) // Use the group key as the domain
+      .domain(top10Data.map((d) => d[0])) 
       .range([0, innerHeight])
       .padding(1);
 
@@ -173,8 +188,8 @@ function topUniversities() {
       .append("g")
       .call(d3.axisLeft(y))
       .selectAll("text")
-      .style("font-family", "var(--jost)") // Change font to var(--jost)
-      .style("font-size", "14px"); // Change font size for Y-axis ticks
+      .style("font-family", "var(--jost)")
+      .style("font-size", "14px"); 
 
     // Add lines
     chartArea
@@ -197,10 +212,15 @@ function topUniversities() {
       .append("circle")
       .attr("cx", (d) => x(d[1].length))
       .attr("cy", (d) => y(d[0]))
-      .attr("r", innerWidth * 0.01)
-      .style("fill", "var(--yellow)");
+      .attr("r", innerWidth * 0.015)
+      .style("fill", "var(--yellow)")
+      .on('mousemove', (d, e) => mouseMove(d, e))
+      .on('mouseout', (d, e) => mouseOut(d, e))
+      .on('mouseover', (d, e) => mouseOverLollipop(d, e));
   });
 }
+
+
 
 /*MAP___________________________________________________ */
 function mouseOver(e, d, birth) {
@@ -410,7 +430,7 @@ function phase1() {
 
   data = [{ id: 0, x: xScale(5), y: yScale(5), r: raio, color: yellow }];
 
-  extra_info.innerHTML = "Use the <b>arrow keys</b> or <b>click on the side navigation bar </b> to move forwards/backwards";
+  extra_info.innerHTML = "Use the <b>arrow keys</b> or <b>click on the left side navigation bar </b> to move forwards/backwards";
 
   update();
   svg.selectAll("circle").attr("id", "circle_solo");
