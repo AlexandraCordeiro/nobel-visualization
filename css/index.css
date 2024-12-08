@@ -41,7 +41,7 @@ h1{
 
 
 /*baseado em https://www.w3schools.com/howto/howto_css_flip_card.asp*/
-/* The flip card container - set the width and height to whatever you want. We have added the border property to demonstrate that the flip itself goes out of the box on hover (remove perspective if you don't want the 3D effect */
+/* The flip card container. */
 .flip-card {
     background-color: transparent;
     width: 560px;
@@ -50,11 +50,10 @@ h1{
     top:50%;
     left:50%;
     transform: translate(-50%,-50%);
-    /*border: 1px solid #f1f1f1;
-    perspective: 1000px; /* Remove this if you don't want the 3D effect */
+    perspective: 1000px; /* 3D effect */
   }
   
-  /* This container is needed to position the front and back side */
+  /* to position the front and back side */
   .flip-card-inner {
     position: relative;
     width: 100%;
@@ -78,12 +77,6 @@ h1{
     backface-visibility: hidden;
   }
   
-  /* Style the front side (fallback if image is missing) */
-  .flip-card-front {
-    /*background-color: #bbb;*/
-    color: black;
-  }
-  
   /* Style the back side */
   .flip-card-back {
     background-color: var(--yellow);
@@ -100,7 +93,6 @@ h1{
     font-family: 'Roboto', 'sans-serif';
     font-size:3rem;
     font-weight: 500;
-    /*line-height: 2.9rem;*/
     max-width:98%;
   }
 
@@ -110,7 +102,6 @@ h1{
   }
 
   #image{
-    /*align-self: center;*/
     height:100%;
     width:100%;
   }
